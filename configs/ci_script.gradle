@@ -1,0 +1,24 @@
+apply plugin: 'checkstyle'
+apply plugin: 'pmd'
+
+task checkstyle(type: Checkstyle) {
+    configFile file("../configs/checkstyle/checkstyle.xml")
+    source 'src/main/java'
+    include '**/*.java'
+    classpath = files()
+    ignoreFailures false
+}
+
+task pmd(type: Pmd) {
+    description 'Run pmd'
+    group 'verification'
+    ignoreFailures false
+
+    ruleSetFiles = files("../configs/pmd/custom-pmd-ruleset.xml")
+    source = fileTree('src/main')
+
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
+}
