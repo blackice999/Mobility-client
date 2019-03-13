@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "639003857573",
+    "firebase_url": "https://mobility-ea144.firebaseio.com",
+    "project_id": "mobility-ea144",
+    "storage_bucket": "mobility-ea144.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:639003857573:android:2cb68229b6991e68",
+        "android_client_info": {
+          "package_name": "com.project.mobility"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "639003857573-n8c49cf559raut43m9vkamnu2n45m6ek.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.project.mobility",
+            "certificate_hash": "3b163259a37b68a9830ff455d6588cb3a6a560ef"
+          }
+        },
+        {
+          "client_id": "639003857573-7nl462k3a7dv4svj3mb20hjm1jakdcta.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCxt4ncXb9d2ipwLE_Vu_0-b72QK4aGkKw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "639003857573-7nl462k3a7dv4svj3mb20hjm1jakdcta.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

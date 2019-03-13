@@ -1,0 +1,18 @@
+<FindBugsFilter>
+    <Match>
+        <Or>
+            <Class name="~android.support.*" />
+            <Class name="~androidmads.library.*" />
+            <Class name="~.*\.Manifest\$.*" />
+
+            <Class name="~ro.softvision.quizapp.R.*" />
+            <Class name="~ro.softvision.quizapp.R$*" />
+            <Class name="~androidx.*" />
+            <Class name="~butterknife.*" />
+            <Class name="~com.google.android.material.*" />
+            <Class name="~com.squareup.leakcanary.*" />
+        </Or>
+        <Bug
+            category="PERFORMANCE,MALICIOUS_CODE,STYLE,SECURITY,CORRECTNESS,MT_CORRECTNESS,BAD_PRACTICE,I18N,NM_CLASS_NAMING_CONVENTION" />
+    </Match>
+</FindBugsFilter>
