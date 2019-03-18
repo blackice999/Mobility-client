@@ -79,6 +79,22 @@ dependencies {
 
     //Spotbugs
     implementation spotbugsDependencies.values()
+
+    //Google auth services
+    implementation googleAuthDependencies.values()
+
+    //LeakCanary
+    debugImplementation leakCanaryDebugDependencies.values()
+    releaseImplementation leakCanaryReleaseDependencies.values()
+
+    //Material design
+    implementation materialDependencies.values()
+
+    //Facebook
+    implementation facebookDependencies.values()
+
+    //Timber
+    implementation loggingDependencies.values()
 }
 
 task spotbugs(type: SpotBugsTask) {

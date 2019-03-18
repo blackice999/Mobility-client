@@ -12,6 +12,11 @@ ext {
     final firebaseAuthVersion = "16.2.0"
     final firebaseMessagingVersion = "17.4.0"
     final spotbugsAnnotationVersion = "3.1.12"
+    final leakCanaryVersion = "1.6.1"
+    final googleAuthServicesVersion = "16.0.1"
+    final materialVersion = "1.0.0"
+    final facebookLoginVersion = "4.41.0"
+    final timberVersion = "4.7.1"
 
 
     lifeCycleDependencies = [
@@ -70,5 +75,29 @@ ext {
 
     spotbugsDependencies = [
             spotbugsAnnotation: "com.github.spotbugs:spotbugs-annotations:$spotbugsAnnotationVersion"
+    ]
+
+    leakCanaryDebugDependencies = [
+            leakCanar: "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
+    ]
+
+    leakCanaryReleaseDependencies = [
+            leakCanary: "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanaryVersion"
+    ]
+
+    googleAuthDependencies = [
+            googleAuthServices  : "com.google.android.gms:play-services-auth:$googleAuthServicesVersion"
+    ]
+    
+    materialDependencies = [
+            materialDesign : "com.google.android.material:material:$materialVersion"
+    ]
+
+    facebookDependencies = [
+            facebookLogin : "com.facebook.android:facebook-login:$facebookLoginVersion"
+    ]
+
+    loggingDependencies = [
+            timber: "com.jakewharton.timber:timber:$timberVersion"
     ]
 }
