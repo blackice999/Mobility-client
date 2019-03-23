@@ -1,4 +1,4 @@
-package com.project.mobility.view;
+package com.project.mobility.view.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 

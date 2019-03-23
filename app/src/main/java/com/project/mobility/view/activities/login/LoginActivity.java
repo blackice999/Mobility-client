@@ -1,4 +1,4 @@
-package com.project.mobility.view;
+package com.project.mobility.view.activities.login;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,6 +22,7 @@ import com.project.mobility.di.injection.Injection;
 import com.project.mobility.model.login.provider.FacebookAuthProvider;
 import com.project.mobility.model.login.provider.GoogleAuthProvider;
 import com.project.mobility.storage.AuthProviderPreferences;
+import com.project.mobility.view.activities.ProductsActivity;
 import com.project.mobility.viewmodel.login.LoginViewModel;
 
 import javax.inject.Inject;
