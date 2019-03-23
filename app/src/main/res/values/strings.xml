@@ -6,4 +6,7 @@
     <string name="hint_email">Email</string>
     <string name="facebook_app_id">2614116595326547</string>
     <string name="fb_login_protocol_scheme">fb2614116595326547</string>
+    <string name="delivery_address">Delivery Address</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="mobility_image_content_description">Mobility Image</string>
 </resources>

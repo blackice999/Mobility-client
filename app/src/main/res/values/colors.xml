@@ -6,4 +6,5 @@
 
     <color name="text_hint">#CCAA77</color>
     <color name="progress_failure">#FC455C</color>
+    <color name="background">#FFEC48</color>
 </resources>
