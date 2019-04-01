@@ -95,8 +95,6 @@ dependencies {
 
     //Timber
     implementation loggingDependencies.values()
-    implementation 'com.google.android.material:material:1.0.0'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
 }
 
 task spotbugs(type: SpotBugsTask) {
