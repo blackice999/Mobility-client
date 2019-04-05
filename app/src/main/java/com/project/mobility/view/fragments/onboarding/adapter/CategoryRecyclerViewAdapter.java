@@ -11,6 +11,7 @@ import com.project.mobility.model.onboarding.category.Category;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -24,6 +25,7 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRe
     private List<Category> categories;
     private SelectionTracker<Long> selectionTracker;
     private List<Integer> categoryPositions;
+    private int i;
 
     @Inject
     public CategoryRecyclerViewAdapter(List<Category> categories) {
@@ -37,6 +39,12 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRe
 
     public void setSelectedCategoriesPosition(List<Integer> categoryPositions) {
         this.categoryPositions = categoryPositions;
+    }
+
+    public void shuffleList() {
+        i = 0;
+        Collections.shuffle(categories);
+        notifyItemRangeChanged(0, getItemCount());
     }
 
     public List<String> getSelectedCategoriesName() {
@@ -61,7 +69,13 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRe
     public void onBindViewHolder(@NotNull final ViewHolder holder, int position) {
         holder.mItem = categories.get(position);
         holder.mContentView.setText(categories.get(position).getName());
-        holder.bind(selectionTracker.isSelected((long) position));
+
+//        if (categoryPositions != null && !categoryPositions.isEmpty()) {
+//            holder.bind(selectionTracker.isSelected((long) categories.get(position).getId()));
+//            i++;
+//        } else {
+        holder.bind(selectionTracker.isSelected((long) categories.get(position).getId()));
+//        }
     }
 
     @Override

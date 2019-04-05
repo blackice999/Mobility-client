@@ -29,6 +29,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import timber.log.Timber;
 
 public class CategoryPageFragment extends Fragment implements FragmentFinishedListener {
@@ -110,6 +111,14 @@ public class CategoryPageFragment extends Fragment implements FragmentFinishedLi
         });
 
         return view;
+    }
+
+    @OnClick(R.id.shuffle_button)
+    public void shuffleListItems() {
+        adapter.shuffleList();
+        adapter.notifyItemRangeChanged(0, adapter.getItemCount());
+        subscribeNotificationsTopics();
+
     }
 
     private void setSelectedCategoriesPosition(Selection<Long> selectedCategories) {
