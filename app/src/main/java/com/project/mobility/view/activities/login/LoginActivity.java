@@ -21,7 +21,7 @@ import com.project.mobility.R;
 import com.project.mobility.di.injection.Injection;
 import com.project.mobility.model.login.provider.FacebookAuthProvider;
 import com.project.mobility.model.login.provider.GoogleAuthProvider;
-import com.project.mobility.storage.AuthProviderPreferences;
+import com.project.mobility.storage.Preferences;
 import com.project.mobility.view.activities.ProductsActivity;
 import com.project.mobility.viewmodel.login.LoginViewModel;
 
@@ -43,7 +43,7 @@ public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.facebook_sign_in) LoginButton facebookLoginButton;
     @BindView(R.id.logout_button) Button logoutButton;
 
-    @Inject AuthProviderPreferences authProviderPreferences;
+    @Inject Preferences preferences;
     @Inject GoogleAuthProvider googleAuthProvider;
     @Inject FacebookAuthProvider facebookAuthProvider;
 
@@ -86,7 +86,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (authProviderPreferences.getSplashScreenLaunched()) {
+        if (preferences.getBoolean(Preferences.KEY_AUTH_IS_SPLASHSCREEN_LAUNCHED)) {
             launchProductsActivity();
         } else {
             loginViewModel.authenticate().observe(this, couldLogIn -> {
@@ -112,8 +112,8 @@ public class LoginActivity extends AppCompatActivity {
 
     @OnClick(R.id.logout_button)
     public void logout() {
-        if (authProviderPreferences.getProviderName() != null) {
-            String authProviderName = authProviderPreferences.getProviderName();
+        if (preferences.getString(Preferences.KEY_AUTH_PROVIDER_NAME) != null) {
+            String authProviderName = preferences.getString(Preferences.KEY_AUTH_PROVIDER_NAME);
 
             switch (authProviderName) {
                 case GoogleAuthProvider.AUTH_PROVIDER_NAME:
@@ -128,7 +128,7 @@ public class LoginActivity extends AppCompatActivity {
             loginViewModel.logout().observe(this, loggedOut -> {
                 if (loggedOut) {
                     logoutButton.setVisibility(View.GONE);
-                    authProviderPreferences.clearPreferences();
+                    preferences.clearPreferences(Preferences.PREFERENCE_TYPE_AUTH);
                 }
             });
         }

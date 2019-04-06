@@ -5,7 +5,7 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.project.mobility.di.injection.Injection;
-import com.project.mobility.storage.AuthProviderPreferences;
+import com.project.mobility.storage.Preferences;
 
 import javax.inject.Inject;
 
@@ -14,7 +14,8 @@ import timber.log.Timber;
 public class FacebookAuthProvider extends AuthProvider {
     public static final String AUTH_PROVIDER_NAME = "Facebook";
 
-    @Inject AuthProviderPreferences authProviderPreferences;
+    @Inject Preferences preferences;
+
     @Inject
     public FacebookAuthProvider() {
         Injection.inject(this);
@@ -32,9 +33,9 @@ public class FacebookAuthProvider extends AuthProvider {
                     if (task.isSuccessful()) {
                         Timber.d("signInWithCredential:success");
                         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-                        authProviderPreferences.setEmail(firebaseUser.getEmail());
-                        authProviderPreferences.setDisplayName(firebaseUser.getDisplayName());
-                        authProviderPreferences.setProviderName(AUTH_PROVIDER_NAME);
+                        preferences.setString(Preferences.KEY_AUTH_PROVIDER_EMAIL, firebaseUser.getEmail());
+                        preferences.setString(Preferences.KEY_AUTH_PROVIDER_DISPLAY_NAME, firebaseUser.getDisplayName());
+                        preferences.setString(Preferences.KEY_AUTH_PROVIDER_NAME, AUTH_PROVIDER_NAME);
                     } else {
                         Timber.w(task.getException(), "signInWithCredential:failure");
                     }

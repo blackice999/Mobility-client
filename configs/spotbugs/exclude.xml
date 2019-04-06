@@ -5,8 +5,8 @@
             <Class name="~androidmads.library.*" />
             <Class name="~.*\.Manifest\$.*" />
 
-            <Class name="~ro.softvision.quizapp.R.*" />
-            <Class name="~ro.softvision.quizapp.R$*" />
+            <Class name="~com.project.mobility.R.*" />
+            <Class name="~com.project.mobility.R$*" />
             <Class name="~androidx.*" />
             <Class name="~butterknife.*" />
             <Class name="~com.google.android.material.*" />

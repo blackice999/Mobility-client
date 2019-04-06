@@ -3,15 +3,15 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
     <style name="UserInfoInputLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="boxStrokeColor">@android:color/white</item>
-        <item name="boxStrokeWidth">2dp</item>
-        <item name="android:layout_marginEnd">8dp</item>
+        <item name="boxStrokeWidth">@dimen/margin_half_base</item>
+        <item name="android:layout_marginEnd">@dimen/margin_two_times_base</item>
         <item name="android:textColorHint">@color/text_hint</item>
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
