@@ -6,4 +6,11 @@
     <string name="hint_email">Email</string>
     <string name="facebook_app_id">2614116595326547</string>
     <string name="fb_login_protocol_scheme">fb2614116595326547</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="onboarding_selected_categories">select at least 2 categories. You have selected: %1$d</string>
+    <string name="navigation_forward_message">Next</string>
+    <string name="navigation_finish_message">Finish</string>
+    <string name="login_message">Login</string>
 </resources>

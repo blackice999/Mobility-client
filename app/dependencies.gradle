@@ -33,10 +33,11 @@ ext {
     ]
 
     layoutDependencies = [
-            recyclerView    : "androidx.recyclerview:recyclerview:$viewVersion",
-            drawerLayout    : "androidx.drawerlayout:drawerlayout:$viewVersion",
-            circleImageView : "de.hdodenhof:circleimageview:$circleImageViewVersion",
-            constraintLayout: "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
+            recyclerView         : "androidx.recyclerview:recyclerview:$viewVersion",
+            recyclerViewSelection: "androidx.recyclerview:recyclerview-selection:$viewVersion",
+            drawerLayout         : "androidx.drawerlayout:drawerlayout:$viewVersion",
+            circleImageView      : "de.hdodenhof:circleimageview:$circleImageViewVersion",
+            constraintLayout     : "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
     ]
 
     injectionDependencies = [
@@ -86,15 +87,15 @@ ext {
     ]
 
     googleAuthDependencies = [
-            googleAuthServices  : "com.google.android.gms:play-services-auth:$googleAuthServicesVersion"
+            googleAuthServices: "com.google.android.gms:play-services-auth:$googleAuthServicesVersion"
     ]
-    
+
     materialDependencies = [
-            materialDesign : "com.google.android.material:material:$materialVersion"
+            materialDesign: "com.google.android.material:material:$materialVersion"
     ]
 
     facebookDependencies = [
-            facebookLogin : "com.facebook.android:facebook-login:$facebookLoginVersion"
+            facebookLogin: "com.facebook.android:facebook-login:$facebookLoginVersion"
     ]
 
     loggingDependencies = [
