@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/yellow"
+    tools:context=".view.activities.splash.SplashActivity">
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="?attr/actionBarSize" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/onboarding_forward_button"
+        android:layout_width="60dp"
+        android:layout_height="40dp"
+        android:background="@drawable/button_navigation_state"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/onboarding_complete_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_navigation_end_state"
+        android:text="@string/navigation_finish_message"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/onboarding_login_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_navigation_end_state"
+        android:text="@string/login_message"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tab_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/container"
+        app:layout_constraintStart_toStartOf="parent"
+        app:tabBackground="@drawable/tab_states"
+        app:tabGravity="center"
+        app:tabIndicatorHeight="0dp"
+        app:tabMode="fixed" />
+</androidx.constraintlayout.widget.ConstraintLayout>
