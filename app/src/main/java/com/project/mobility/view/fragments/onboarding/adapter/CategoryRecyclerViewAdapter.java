@@ -1,11 +1,14 @@
 package com.project.mobility.view.fragments.onboarding.adapter;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.project.mobility.R;
+import com.project.mobility.di.injection.Injection;
 import com.project.mobility.model.onboarding.category.Category;
 
 import org.jetbrains.annotations.NotNull;
@@ -19,8 +22,12 @@ import javax.inject.Inject;
 import androidx.recyclerview.selection.ItemDetailsLookup;
 import androidx.recyclerview.selection.SelectionTracker;
 import androidx.recyclerview.widget.RecyclerView;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRecyclerViewAdapter.ViewHolder> {
+
+    @Inject Context context;
 
     private List<Category> categories;
     private SelectionTracker<Long> selectionTracker;
@@ -29,6 +36,7 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRe
 
     @Inject
     public CategoryRecyclerViewAdapter(List<Category> categories) {
+        Injection.inject(this);
         this.categories = categories;
         setHasStableIds(true);
     }
@@ -68,14 +76,11 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRe
     @Override
     public void onBindViewHolder(@NotNull final ViewHolder holder, int position) {
         holder.mItem = categories.get(position);
-        holder.mContentView.setText(categories.get(position).getName());
+        holder.contentView.setText(categories.get(position).getName());
 
-//        if (categoryPositions != null && !categoryPositions.isEmpty()) {
-//            holder.bind(selectionTracker.isSelected((long) categories.get(position).getId()));
-//            i++;
-//        } else {
-        holder.bind(selectionTracker.isSelected((long) categories.get(position).getId()));
-//        }
+        int resourceId = context.getResources().getIdentifier(categories.get(position).getImage(), "drawable", context.getPackageName());
+        holder.imageView.setImageResource(resourceId);
+        holder.bind(selectionTracker.isSelected(categories.get(position).getId()));
     }
 
     @Override
@@ -90,14 +95,16 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRe
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.content) TextView contentView;
+        @BindView(R.id.image_category) ImageView imageView;
+
         public final View mView;
-        public final TextView mContentView;
         public Category mItem;
 
         public ViewHolder(View view) {
             super(view);
+            ButterKnife.bind(this, view);
             mView = view;
-            mContentView = view.findViewById(R.id.content);
         }
 
         void bind(boolean isSelected) {
@@ -111,7 +118,7 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRe
         @NotNull
         @Override
         public String toString() {
-            return super.toString() + " '" + mContentView.getText() + "'";
+            return super.toString() + " '" + contentView.getText() + "'";
         }
     }
 }

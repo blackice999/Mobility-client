@@ -41,6 +41,7 @@ public class CategoryPageFragment extends Fragment implements FragmentFinishedLi
 
     @BindView(R.id.list) RecyclerView recyclerView;
     @BindView(R.id.selected_categories_text) TextView selectedCategoriesText;
+    @BindView(R.id.selected_categories_text2) TextView selectedCategoriesDummyText;
 
     private int mColumnCount = 1;
     private OnboardingCategoryViewModel onboardingCategoryViewModel;
@@ -116,7 +117,6 @@ public class CategoryPageFragment extends Fragment implements FragmentFinishedLi
     @OnClick(R.id.shuffle_button)
     public void shuffleListItems() {
         adapter.shuffleList();
-        adapter.notifyItemRangeChanged(0, adapter.getItemCount());
         subscribeNotificationsTopics();
 
     }
@@ -142,9 +142,13 @@ public class CategoryPageFragment extends Fragment implements FragmentFinishedLi
 
     private void subscribeNotificationsTopics() {
         if (adapter.getSelectedCategoriesName() != null) {
+            StringBuilder stringBuilder = new StringBuilder();
             for (String categoryName : adapter.getSelectedCategoriesName()) {
+                stringBuilder.append(categoryName);
+                stringBuilder.append(" ");
                 Timber.d(categoryName);
             }
+            selectedCategoriesDummyText.setText(stringBuilder);
         }
     }
 }
