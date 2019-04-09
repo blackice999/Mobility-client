@@ -82,7 +82,7 @@ public class CategoryPageFragment extends Fragment implements FragmentFinishedLi
             recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
         }
 
-        onboardingCategoryViewModel.getCategories().observe(this, categories -> {
+        onboardingCategoryViewModel.getCategories().observe(getViewLifecycleOwner(), categories -> {
             adapter = new CategoryRecyclerViewAdapter(categories);
             recyclerView.setAdapter(adapter);
             SelectionTracker<Long> selectionTracker = new SelectionTracker.Builder<>(
