@@ -17,6 +17,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputEditText;
 import com.project.mobility.R;
 import com.project.mobility.di.injection.Injection;
 import com.project.mobility.model.login.provider.FacebookAuthProvider;
@@ -24,6 +25,8 @@ import com.project.mobility.model.login.provider.GoogleAuthProvider;
 import com.project.mobility.storage.AuthProviderPreferences;
 import com.project.mobility.view.activities.ProductsActivity;
 import com.project.mobility.viewmodel.login.LoginViewModel;
+
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
@@ -99,8 +102,32 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    private boolean isValidEmailId(String email){
+        return Pattern.compile("^(([\\w-]+\\.)+[\\w-]+|([a-zA-Z]{1}|[\\w-]{2,}))@"
+                + "((([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\.([0-1]?"
+                + "[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\."
+                + "([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\.([0-1]?"
+                + "[0-9]{1,2}|25[0-5]|2[0-4][0-9])){1}|"
+                + "([a-zA-Z]+[\\w-]+\\.)+[a-zA-Z]{2,4})$").matcher(email).matches();
+    }
+    public boolean validPhoneNumber(String number)
+    {
+        return android.util.Patterns.PHONE.matcher(number).matches();
+    }
+
+
     @OnClick(R.id.google_sign_in)
     public void signInWithGoogle() {
+        TextInputEditText email = (TextInputEditText)findViewById(R.id.input_delivery_address);
+        TextInputEditText phone = (TextInputEditText)findViewById(R.id.input_phone_number);
+        if(!isValidEmailId(email.getText().toString().trim())){
+            Toast.makeText(getApplicationContext(), "Invalid Email Address.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(!validPhoneNumber(phone.getText().toString().trim())){
+            Toast.makeText(getApplicationContext(), "Invalid Phone Number.", Toast.LENGTH_SHORT).show();
+            return;
+        }
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.google_client_id))
                 .requestEmail()
