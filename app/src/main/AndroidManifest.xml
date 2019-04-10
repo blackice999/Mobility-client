@@ -13,7 +13,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".view.activities.OnboardingActivity" />
+        <activity android:name=".view.activities.OnboardingActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.activities.splash.SplashActivity"
             android:theme="@style/SplashTheme">
@@ -23,8 +25,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.activities.ProductsActivity" />
-        <activity android:name=".view.activities.login.LoginActivity" />
+        <activity android:name=".view.activities.ProductsActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".view.activities.login.LoginActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
