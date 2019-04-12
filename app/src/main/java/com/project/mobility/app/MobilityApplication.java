@@ -2,8 +2,10 @@ package com.project.mobility.app;
 
 import android.app.Application;
 
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.project.mobility.BuildConfig;
 import com.project.mobility.di.module.ToothpickModule;
+import com.project.mobility.util.notification.NotificationsHelper;
 import com.squareup.leakcanary.LeakCanary;
 
 import timber.log.Timber;
@@ -27,6 +29,9 @@ public class MobilityApplication extends Application {
         LeakCanary.install(this);
         initToothpick();
         initTimber();
+
+        NotificationsHelper.createNotificationChannel(this);
+        FirebaseMessaging.getInstance().subscribeToTopic("test");
     }
 
     private void initTimber() {
