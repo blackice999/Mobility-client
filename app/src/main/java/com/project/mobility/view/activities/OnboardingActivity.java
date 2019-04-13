@@ -10,6 +10,7 @@ import com.project.mobility.R;
 import com.project.mobility.di.injection.Injection;
 import com.project.mobility.storage.Preferences;
 import com.project.mobility.view.activities.login.LoginActivity;
+import com.project.mobility.view.activities.navigation.main.MainNavigationActivity;
 import com.project.mobility.view.fragments.onboarding.CategoryPageFragment;
 import com.project.mobility.view.fragments.onboarding.FragmentFinishedListener;
 import com.project.mobility.view.fragments.onboarding.PageFragment;
@@ -49,7 +50,7 @@ public class OnboardingActivity extends AppCompatActivity {
         Injection.inject(this);
 
         if (preferences.getBoolean(Preferences.KEY_ONBOARDING_COMPLETE)) {
-            Intent introIntent = new Intent(this, ProductsActivity.class);
+            Intent introIntent = new Intent(this, MainNavigationActivity.class);
             startActivity(introIntent);
             finish();
         }
@@ -112,7 +113,7 @@ public class OnboardingActivity extends AppCompatActivity {
     @OnClick(R.id.onboarding_complete_button)
     public void completeOnboarding() {
         finishFragments();
-        startActivity(new Intent(this, ProductsActivity.class));
+        startActivity(new Intent(this, MainNavigationActivity.class));
         preferences.setBoolean(Preferences.KEY_ONBOARDING_COMPLETE, true);
         finish();
     }

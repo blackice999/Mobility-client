@@ -1,7 +1,7 @@
 package com.project.mobility.di.injection;
 
 import com.project.mobility.app.MobilityApplication;
-import com.project.mobility.di.module.ToothpickModule;
+import com.project.mobility.module.toothpick.ToothpickModule;
 
 import toothpick.Scope;
 import toothpick.Toothpick;
