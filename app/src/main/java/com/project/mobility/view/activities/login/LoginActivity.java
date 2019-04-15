@@ -2,6 +2,7 @@ package com.project.mobility.view.activities.login;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -26,8 +27,6 @@ import com.project.mobility.storage.AuthProviderPreferences;
 import com.project.mobility.view.activities.ProductsActivity;
 import com.project.mobility.viewmodel.login.LoginViewModel;
 
-import java.util.regex.Pattern;
-
 import javax.inject.Inject;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -36,6 +35,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import timber.log.Timber;
+
+import static com.project.mobility.util.StringUtils.*;
+
+import com.project.mobility.ui.GenericTextWatcher.;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -102,32 +105,26 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private boolean isValidEmailId(String email){
-        return Pattern.compile("^(([\\w-]+\\.)+[\\w-]+|([a-zA-Z]{1}|[\\w-]{2,}))@"
-                + "((([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\.([0-1]?"
-                + "[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\."
-                + "([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\.([0-1]?"
-                + "[0-9]{1,2}|25[0-5]|2[0-4][0-9])){1}|"
-                + "([a-zA-Z]+[\\w-]+\\.)+[a-zA-Z]{2,4})$").matcher(email).matches();
-    }
-    public boolean validPhoneNumber(String number)
-    {
-        return android.util.Patterns.PHONE.matcher(number).matches();
+
+    private static void validRegisterInputs(TextInputEditText email, TextInputEditText phone){
+        if(!isEmailValid(email.getText().toString().trim())){
+            Toast.makeText(this, "Invalid Email Address.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if(!isPhoneValid(phone.getText().toString().trim())){
+            Toast.makeText(this, "Invalid Phone Number.", Toast.LENGTH_LONG).show();
+            return;
+        }
     }
 
 
     @OnClick(R.id.google_sign_in)
     public void signInWithGoogle() {
-        TextInputEditText email = (TextInputEditText)findViewById(R.id.input_delivery_address);
-        TextInputEditText phone = (TextInputEditText)findViewById(R.id.input_phone_number);
-        if(!isValidEmailId(email.getText().toString().trim())){
-            Toast.makeText(getApplicationContext(), "Invalid Email Address.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if(!validPhoneNumber(phone.getText().toString().trim())){
-            Toast.makeText(getApplicationContext(), "Invalid Phone Number.", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        TextInputEditText email = findViewById(R.id.input_delivery_address);
+        TextInputEditText phone = findViewById(R.id.input_phone_number);
+        validRegisterInputs(email, phone);
+        validRegisterInputs1();
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.google_client_id))
                 .requestEmail()
