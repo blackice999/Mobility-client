@@ -3,7 +3,7 @@ package com.project.mobility.model.login.provider;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.project.mobility.storage.AuthProviderPreferences;
+import com.project.mobility.storage.Preferences;
 
 import javax.inject.Inject;
 
@@ -12,14 +12,14 @@ import timber.log.Timber;
 public class GoogleAuthProvider extends AuthProvider {
     public static final String AUTH_PROVIDER_NAME = "Google";
 
-    @Inject AuthProviderPreferences authProviderPreferences;
+    @Inject Preferences preferences;
 
     @Inject
-    public String getProviderName() {
-        return AUTH_PROVIDER_NAME;
+    public GoogleAuthProvider() {
     }
 
-    public GoogleAuthProvider() {
+    public String getProviderName() {
+        return AUTH_PROVIDER_NAME;
     }
 
     @Override
@@ -31,9 +31,9 @@ public class GoogleAuthProvider extends AuthProvider {
                         // Sign in success, update UI with the signed-in user's information
                         Timber.d("signInWithCredential:success");
                         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-                        authProviderPreferences.setEmail(firebaseUser.getEmail());
-                        authProviderPreferences.setDisplayName(firebaseUser.getDisplayName());
-                        authProviderPreferences.setProviderName(AUTH_PROVIDER_NAME);
+                        preferences.setString(Preferences.KEY_AUTH_PROVIDER_EMAIL, firebaseUser.getEmail());
+                        preferences.setString(Preferences.KEY_AUTH_PROVIDER_DISPLAY_NAME, firebaseUser.getDisplayName());
+                        preferences.setString(Preferences.KEY_AUTH_PROVIDER_NAME, AUTH_PROVIDER_NAME);
                     } else {
                         // If sign in fails, display a message to the user.
                         Timber.w(task.getException(), "signInWithCredential:failure");

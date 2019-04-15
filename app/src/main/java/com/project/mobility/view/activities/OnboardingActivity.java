@@ -8,7 +8,7 @@ import com.google.android.material.animation.ArgbEvaluatorCompat;
 import com.google.android.material.tabs.TabLayout;
 import com.project.mobility.R;
 import com.project.mobility.di.injection.Injection;
-import com.project.mobility.storage.OnboardingPreferences;
+import com.project.mobility.storage.Preferences;
 import com.project.mobility.view.activities.login.LoginActivity;
 import com.project.mobility.view.fragments.onboarding.CategoryPageFragment;
 import com.project.mobility.view.fragments.onboarding.FragmentFinishedListener;
@@ -35,7 +35,7 @@ public class OnboardingActivity extends AppCompatActivity {
     @BindView(R.id.onboarding_login_button) AppCompatButton loginButton;
     @BindView(R.id.onboarding_forward_button) AppCompatButton nextOnboardingPageButton;
 
-    @Inject OnboardingPreferences onboardingPreferences;
+    @Inject Preferences preferences;
 
     private int currentPage;
     private OnboardingSectionAdapter adapter;
@@ -48,7 +48,7 @@ public class OnboardingActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         Injection.inject(this);
 
-        if (onboardingPreferences.isOnboardingComplete()) {
+        if (preferences.getBoolean(Preferences.KEY_ONBOARDING_COMPLETE)) {
             Intent introIntent = new Intent(this, ProductsActivity.class);
             startActivity(introIntent);
             finish();
@@ -113,14 +113,14 @@ public class OnboardingActivity extends AppCompatActivity {
     public void completeOnboarding() {
         finishFragments();
         startActivity(new Intent(this, ProductsActivity.class));
-        onboardingPreferences.setOnboardingComplete(true);
+        preferences.setBoolean(Preferences.KEY_ONBOARDING_COMPLETE, true);
         finish();
     }
 
     @OnClick(R.id.onboarding_login_button)
     public void login() {
         startActivity(new Intent(this, LoginActivity.class));
-        onboardingPreferences.setOnboardingComplete(true);
+        preferences.setBoolean(Preferences.KEY_ONBOARDING_COMPLETE, true);
         finish();
     }
 

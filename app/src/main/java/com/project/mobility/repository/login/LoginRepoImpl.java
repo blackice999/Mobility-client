@@ -2,13 +2,13 @@ package com.project.mobility.repository.login;
 
 import com.project.mobility.di.injection.Injection;
 import com.project.mobility.model.login.provider.AuthProvider;
-import com.project.mobility.storage.AuthProviderPreferences;
+import com.project.mobility.storage.Preferences;
 
 import javax.inject.Inject;
 
 public class LoginRepoImpl implements LoginRepo {
 
-    @Inject AuthProviderPreferences authProviderPreferences;
+    @Inject Preferences preferences;
 
     @Inject
     public LoginRepoImpl() {
@@ -24,7 +24,7 @@ public class LoginRepoImpl implements LoginRepo {
     public boolean register(AuthProvider authProvider) {
         if (authProvider != null) {
             authProvider.authenticate();
-            authProviderPreferences.setSplashScreenLaunched(true);
+            preferences.setBoolean(Preferences.KEY_AUTH_IS_SPLASHSCREEN_LAUNCHED, true);
             return true;
         }
 

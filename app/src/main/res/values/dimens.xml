@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="text_margin">16dp</dimen>
+    <dimen name="ripple_radius">12dp</dimen>
+    <dimen name="tab_thickness">4dp</dimen>
+    <dimen name="margin_base">4dp</dimen>
+    <dimen name="margin_half_base">2dp</dimen>
+    <dimen name="margin_two_times_base">8dp</dimen>
+    <dimen name="margin_three_times_base">12dp</dimen>
+    <dimen name="margin_four_times_base">16dp</dimen>
+    <dimen name="margin_five_times_base">20dp</dimen>
+    <dimen name="margin_six_times_base">24dp</dimen>
+    <dimen name="margin_seven_times_base">28dp</dimen>
+    <dimen name="margin_eight_times_base">32dp</dimen>
 </resources>

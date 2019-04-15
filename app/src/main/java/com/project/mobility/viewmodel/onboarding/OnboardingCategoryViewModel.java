@@ -19,10 +19,10 @@ public class OnboardingCategoryViewModel extends ViewModel {
 
     public OnboardingCategoryViewModel() {
         Injection.inject(this);
+        onboardingCategoryLiveData.postValue(onboardingCategoryModel.getCategories());
     }
 
     public LiveData<List<Category>> getCategories() {
-        onboardingCategoryLiveData.postValue(onboardingCategoryModel.getCategories());
         return onboardingCategoryLiveData;
     }
 }

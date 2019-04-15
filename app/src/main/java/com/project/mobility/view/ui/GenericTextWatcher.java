@@ -1,4 +1,4 @@
-package com.project.mobility.ui;
+package com.project.mobility.view.ui;
 
 import android.content.Context;
 import android.text.Editable;
