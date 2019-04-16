@@ -14,6 +14,8 @@ public class Preferences {
     public static final String KEY_ONBOARDING_COMPLETE = "key_OnboardingComplete";
     public static final int PREFERENCE_TYPE_AUTH = 0;
     public static final int PREFERENCE_TYPE_ONBOARDING = 1;
+
+    public static final String KEY_FCM_TOKEN = "key_fcmToken";
     private final SharedPreferences sharedPreferences;
 
     @Inject
