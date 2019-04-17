@@ -16,7 +16,7 @@ public class MobilityApplication extends Application {
     private static MobilityApplication instance;
 
     @Override
-    public void onCreate() {
+    public void onCreate() { 
         super.onCreate();
         instance = this;
         if (LeakCanary.isInAnalyzerProcess(this)) {
