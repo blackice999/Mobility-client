@@ -5,6 +5,7 @@ import android.app.Application;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.project.mobility.BuildConfig;
 import com.project.mobility.module.toothpick.ToothpickModule;
+import com.project.mobility.di.module.ToothpickModule;
 import com.project.mobility.util.notification.NotificationsHelper;
 import com.squareup.leakcanary.LeakCanary;
 
