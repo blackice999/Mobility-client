@@ -11,4 +11,9 @@
     <dimen name="margin_six_times_base">24dp</dimen>
     <dimen name="margin_seven_times_base">28dp</dimen>
     <dimen name="margin_eight_times_base">32dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="text_normal">14sp</dimen>
+    <dimen name="text_title">32sp</dimen>
+    <dimen name="text_menu">12sp</dimen>
 </resources>

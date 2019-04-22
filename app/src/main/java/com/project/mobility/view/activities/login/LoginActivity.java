@@ -22,7 +22,7 @@ import com.project.mobility.di.injection.Injection;
 import com.project.mobility.model.login.provider.FacebookAuthProvider;
 import com.project.mobility.model.login.provider.GoogleAuthProvider;
 import com.project.mobility.storage.Preferences;
-import com.project.mobility.view.activities.ProductsActivity;
+import com.project.mobility.view.activities.navigation.main.MainNavigationActivity;
 import com.project.mobility.viewmodel.login.LoginViewModel;
 
 import javax.inject.Inject;
@@ -135,7 +135,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void launchProductsActivity() {
-        Intent intent = new Intent(this, ProductsActivity.class);
+        Intent intent = new Intent(this, MainNavigationActivity.class);
         startActivity(intent);
         finish();
     }

@@ -1,4 +1,4 @@
-package com.project.mobility.di.module;
+package com.project.mobility.module.toothpick;
 
 import android.app.Application;
 import android.content.Context;
@@ -7,9 +7,16 @@ import com.facebook.CallbackManager;
 import com.google.gson.Gson;
 import com.project.mobility.repository.login.LoginRepo;
 import com.project.mobility.repository.login.LoginRepoImpl;
+import com.project.mobility.repository.main.home.HomeRepo;
+import com.project.mobility.repository.main.home.HomeRepoImpl;
 import com.project.mobility.repository.onboarding.OnboardingCategoryRepo;
 import com.project.mobility.repository.onboarding.OnboardingCategoryRepoImpl;
+import com.project.mobility.repository.products.ProductsRepo;
+import com.project.mobility.repository.products.ProductsRepoImpl;
+import com.project.mobility.util.image.GlideImageLoader;
+import com.project.mobility.util.image.ImageLoader;
 
+import io.reactivex.disposables.CompositeDisposable;
 import toothpick.config.Module;
 
 public class ToothpickModule extends Module {
@@ -19,5 +26,9 @@ public class ToothpickModule extends Module {
         bind(Gson.class).toInstance(new Gson());
         bind(CallbackManager.class).toInstance(CallbackManager.Factory.create());
         bind(OnboardingCategoryRepo.class).to(OnboardingCategoryRepoImpl.class);
+        bind(HomeRepo.class).to(HomeRepoImpl.class);
+        bind(ProductsRepo.class).to(ProductsRepoImpl.class);
+        bind(ImageLoader.class).to(GlideImageLoader.class);
+        bind(CompositeDisposable.class).toInstance(new CompositeDisposable());
     }
 }
