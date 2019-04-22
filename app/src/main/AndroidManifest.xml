@@ -17,9 +17,9 @@
 
             android:name=".view.activities.product.detail.ProductDetailActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"
             android:label="@string/title_activity_product_detail"
             android:parentActivityName=".view.activities.product.ProductsActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -39,12 +39,9 @@
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
+
         <activity
             android:name=".view.activities.OnboardingActivity"
-            android:name=".view.activities.web.WebViewActivity"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />     
-
-        <activity android:name=".view.activities.OnboardingActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
         <activity
@@ -101,22 +98,5 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/primary" />
-    </application>
-
-        <service
-            android:name=".messaging.fcm.NotificationsFirebaseMessagingService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
-
-        <meta-data
-            android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@drawable/notification_icon" />
-        <meta-data
-            android:name="com.google.firebase.messaging.default_notification_color"
-            android:resource="@color/primary" />
-
     </application>
 </manifest>
