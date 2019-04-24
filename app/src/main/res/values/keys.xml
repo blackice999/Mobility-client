@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+
+    <string name="key_notifications_category">notifications_category</string>
+    <string name="key_notifications">notifications</string>
+    <string name="key_list_ringtone">list_ringtone</string>
+    <string name="key_user_info_category">user_info_category</string>
+    <string name="key_delivery_address">delivery_address</string>
+    <string name="key_phone_number">phone_number</string>
+    <string name="key_feedback_category">feedback_category</string>
+    <string name="key_feedback">feedback</string>
+</resources>

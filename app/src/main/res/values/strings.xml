@@ -20,4 +20,14 @@
     <string name="title_activity_category">CategoryActivity</string>
     <string name="error_loading_data">An error occurred while loading data</string>
     <string name="title_activity_product_detail">ProductDetailActivity</string>
+
+    <string name="notifications_preference_category_title">Notifications</string>
+    <string name="notification_preference_title">Display notifications</string>
+    <string name="default_ringtone_preference">Default</string>
+    <string name="ringtone_preference_title">Change notification ringtone</string>
+    <string name="user_info_preference_category_title">"User info</string>
+    <string name="delivery_address_preference_title">Delivery address</string>
+    <string name="phone_number_preference_title">Phone number</string>
+    <string name="feedback_preference_category_title">Feedback</string>
+    <string name="feedback_preference_title">Send feedback</string>
 </resources>
