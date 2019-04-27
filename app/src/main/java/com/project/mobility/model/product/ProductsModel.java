@@ -1,13 +1,13 @@
-package com.project.mobility.model.products;
+package com.project.mobility.model.product;
 
 import com.project.mobility.di.injection.Injection;
-import com.project.mobility.repository.products.ProductsRepo;
+import com.project.mobility.repository.product.ProductsRepo;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
-import io.reactivex.Single;
+import io.reactivex.Observable;
 
 public class ProductsModel {
     @Inject ProductsRepo productsRepo;
@@ -16,7 +16,7 @@ public class ProductsModel {
         Injection.inject(this);
     }
 
-    public Single<List<Product>> getProductsByCategoryId(int id, int page) {
+    public Observable<List<Product>> getProductsByCategoryId(int id, int page) {
         return productsRepo.getProductsByCategoryId(id, page);
     }
 }

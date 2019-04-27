@@ -13,11 +13,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.project.mobility.R;
 import com.project.mobility.di.injection.Injection;
-import com.project.mobility.model.products.Product;
+import com.project.mobility.model.product.Product;
 import com.project.mobility.util.currency.CurrencyUtil;
 import com.project.mobility.util.image.ImageLoader;
 
-import java.util.Currency;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -27,7 +26,8 @@ import butterknife.ButterKnife;
 
 public class ProductsRecyclerViewAdapter extends RecyclerView.Adapter<ProductsRecyclerViewAdapter.ViewHolder> {
 
-    public static final String PLACEHOLDER_IMAGE_URL = "https://via.placeholder.com/300x300.png?text=Mobility";
+    private static final String PLACEHOLDER_IMAGE_URL = "https://via.placeholder.com/300x300.png?text=Mobility";
+
     @Inject ImageLoader imageLoader;
 
     private List<Product> productList;

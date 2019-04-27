@@ -3,12 +3,10 @@ package com.project.mobility.viewmodel.product;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-import androidx.paging.LivePagedListBuilder;
-import androidx.paging.PagedList;
 
 import com.project.mobility.di.injection.Injection;
-import com.project.mobility.model.products.Product;
-import com.project.mobility.model.products.ProductsModel;
+import com.project.mobility.model.product.Product;
+import com.project.mobility.model.product.ProductsModel;
 
 import java.util.List;
 
@@ -16,8 +14,10 @@ import javax.inject.Inject;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.observers.DisposableSingleObserver;
+import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
+import timber.log.Timber;
+import toothpick.Toothpick;
 
 public class ProductsViewModel extends ViewModel {
 
@@ -49,9 +49,10 @@ public class ProductsViewModel extends ViewModel {
         compositeDisposable.add(productsModel.getProductsByCategoryId(categoryId, page)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(new DisposableSingleObserver<List<Product>>() {
+                .subscribeWith(new DisposableObserver<List<Product>>() {
                     @Override
-                    public void onSuccess(List<Product> products) {
+                    public void onNext(List<Product> products) {
+                        Timber.d("Start fetching products");
                         productMutableLiveData.postValue(products);
                         repoErrorLoadingMutableLiveData.setValue(false);
                         loadingMutableLiveData.setValue(false);
@@ -59,8 +60,15 @@ public class ProductsViewModel extends ViewModel {
 
                     @Override
                     public void onError(Throwable e) {
+                        Timber.d("Error fetching products");
+                        e.printStackTrace();
                         loadingMutableLiveData.setValue(false);
-                        repoErrorLoadingMutableLiveData.setValue(false);
+                        repoErrorLoadingMutableLiveData.setValue(true);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Timber.d("Complete fetching products");
                     }
                 })
         );
@@ -84,5 +92,7 @@ public class ProductsViewModel extends ViewModel {
         if (compositeDisposable != null) {
             compositeDisposable.dispose();
         }
+
+        Toothpick.closeScope(this);
     }
 }

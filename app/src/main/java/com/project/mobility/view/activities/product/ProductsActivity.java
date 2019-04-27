@@ -31,8 +31,7 @@ public class ProductsActivity extends AppCompatActivity {
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.products_list) RecyclerView productsRecyclerView;
     @BindView(R.id.progress_bar) ContentLoadingProgressBar progressBar;
-    @BindView(R.id.textview_error_loading)
-    AppCompatTextView errorLoadingDataTextView;
+    @BindView(R.id.textview_error_loading) AppCompatTextView errorLoadingDataTextView;
 
     private ProductsViewModel productsViewModel;
     private ProductsRecyclerViewAdapter productsRecyclerViewAdapter;

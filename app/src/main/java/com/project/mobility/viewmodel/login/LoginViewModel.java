@@ -1,14 +1,16 @@
 package com.project.mobility.viewmodel.login;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
+
 import com.project.mobility.di.injection.Injection;
 import com.project.mobility.model.login.LoginModel;
 import com.project.mobility.model.login.provider.AuthProvider;
 
 import javax.inject.Inject;
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
+import toothpick.Toothpick;
 
 public class LoginViewModel extends ViewModel {
 
@@ -34,5 +36,11 @@ public class LoginViewModel extends ViewModel {
     public LiveData<Boolean> logout() {
         userLogoutMutableLiveData.postValue(loginModel.logout(authProvider));
         return userLogoutMutableLiveData;
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        Toothpick.closeScope(this);
     }
 }

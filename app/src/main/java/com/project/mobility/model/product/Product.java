@@ -1,10 +1,10 @@
 
-package com.project.mobility.model.products;
-
-import java.util.List;
+package com.project.mobility.model.product;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
 
 public class Product {
 
@@ -23,6 +23,9 @@ public class Product {
     @SerializedName("description")
     @Expose
     private String description;
+    @SerializedName("categoryId")
+    @Expose
+    private int categoryId;
 
     public Integer getId() {
         return id;
@@ -64,4 +67,11 @@ public class Product {
         this.description = description;
     }
 
+    public int getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
+    }
 }
