@@ -2,6 +2,7 @@ package com.project.mobility.view.activities.product.detail;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatTextView;
@@ -55,6 +56,11 @@ public class ProductDetailActivity extends AppCompatActivity {
         setupViewModel();
     }
 
+    @OnClick(R.id.button_add_to_cart)
+    public void addToCart() {
+        productDetailViewModel.addToCart();
+    }
+
     private void setupViewModel() {
         productDetailViewModel.fetchProduct();
         productDetailViewModel.getLoading().observe(this, loading -> {
@@ -81,6 +87,16 @@ public class ProductDetailActivity extends AppCompatActivity {
         });
 
         productDetailViewModel.getImagePosition().observe(this, this::changeImageViewPagerElementPosition);
+
+        productDetailViewModel.getAddToCart().observe(this, addedToCart -> {
+            if (addedToCart != null) {
+                if (addedToCart) {
+                    Toast.makeText(this, "Added successfully to cart", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "There was an error adding to cart", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     private void showProduct(Product product) {

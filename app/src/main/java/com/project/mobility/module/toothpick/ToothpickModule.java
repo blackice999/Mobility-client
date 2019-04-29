@@ -7,8 +7,12 @@ import com.facebook.CallbackManager;
 import com.google.gson.Gson;
 import com.project.mobility.repository.login.LoginRepo;
 import com.project.mobility.repository.login.LoginRepoImpl;
+import com.project.mobility.repository.main.cart.CartRepo;
+import com.project.mobility.repository.main.cart.CartRepoImpl;
 import com.project.mobility.repository.main.home.HomeRepo;
 import com.project.mobility.repository.main.home.HomeRepoImpl;
+import com.project.mobility.repository.main.navigation.MainNavigationRepo;
+import com.project.mobility.repository.main.navigation.MainNavigationRepoImpl;
 import com.project.mobility.repository.onboarding.OnboardingCategoryRepo;
 import com.project.mobility.repository.onboarding.OnboardingCategoryRepoImpl;
 import com.project.mobility.repository.product.ProductsRepo;
@@ -33,5 +37,7 @@ public class ToothpickModule extends Module {
         bind(ImageLoader.class).to(GlideImageLoader.class);
         bind(CompositeDisposable.class).toInstance(new CompositeDisposable());
         bind(ProductDetailRepo.class).to(ProductDetailRepoImpl.class);
+        bind(CartRepo.class).to(CartRepoImpl.class);
+        bind(MainNavigationRepo.class).to(MainNavigationRepoImpl.class);
     }
 }

@@ -8,7 +8,9 @@
     <color name="progress_failure">#FC455C</color>
     <color name="yellow">#FFEC48</color>
     <color name="green">#75DC14</color>
+    <color name="green_dark">#009914</color>
     <color name="orange">#FE5E00</color>
     <color name="black_onethird_opaque">#22000000</color>
     <color name="black_twothirds_opaque">#42000000</color>
+    <color name="red">#FF0000</color>
 </resources>

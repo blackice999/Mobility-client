@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.Completable;
 import io.reactivex.Observable;
 
 public class ProductsModel {
@@ -18,5 +19,9 @@ public class ProductsModel {
 
     public Observable<List<Product>> getProductsByCategoryId(int id, int page) {
         return productsRepo.getProductsByCategoryId(id, page);
+    }
+
+    public Completable addToCart(Product product) {
+        return productsRepo.addToCart(product);
     }
 }

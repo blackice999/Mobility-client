@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvUnreadChats"
+        android:layout_width="@dimen/icon_size_base"
+        android:layout_height="@dimen/icon_size_base"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_marginStart="@dimen/margin_three_times_base"
+        android:background="@drawable/red_circle"
+        android:gravity="center"
+        android:textColor="@android:color/white"
+        android:visibility="gone"
+        tools:text="5" />
+</FrameLayout>

@@ -12,8 +12,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import toothpick.Toothpick;
-
 public class OnboardingCategoryViewModel extends ViewModel {
 
     @Inject OnboardingCategoryModel onboardingCategoryModel;
@@ -31,6 +29,6 @@ public class OnboardingCategoryViewModel extends ViewModel {
     @Override
     protected void onCleared() {
         super.onCleared();
-        Toothpick.closeScope(this);
+        Injection.closeScope(this);
     }
 }

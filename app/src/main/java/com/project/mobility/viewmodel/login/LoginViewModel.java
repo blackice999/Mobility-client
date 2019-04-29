@@ -10,8 +10,6 @@ import com.project.mobility.model.login.provider.AuthProvider;
 
 import javax.inject.Inject;
 
-import toothpick.Toothpick;
-
 public class LoginViewModel extends ViewModel {
 
     @Inject LoginModel loginModel;
@@ -41,6 +39,6 @@ public class LoginViewModel extends ViewModel {
     @Override
     protected void onCleared() {
         super.onCleared();
-        Toothpick.closeScope(this);
+        Injection.closeScope(this);
     }
 }

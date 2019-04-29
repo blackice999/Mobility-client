@@ -2,25 +2,31 @@ package com.project.mobility.view.activities.navigation.main;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProviders;
+
+import com.google.android.material.bottomnavigation.BottomNavigationItemView;
+import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.project.mobility.R;
 import com.project.mobility.di.injection.Injection;
 import com.project.mobility.storage.Preferences;
+import com.project.mobility.viewmodel.main.navigation.MainNavigationViewModel;
 
 import javax.inject.Inject;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
-import toothpick.Toothpick;
 
 public class MainNavigationActivity extends AppCompatActivity {
     public static final String FRAGMENT_TAG = "tag_navigation";
@@ -30,18 +36,42 @@ public class MainNavigationActivity extends AppCompatActivity {
     @Inject MainNavigationFragmentFactory mainNavigationFragmentFactory;
     @Inject Preferences preferences;
 
+    private MainNavigationViewModel mainNavigationViewModel;
+    private AppCompatTextView tvUnreadChats;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_navigation);
         ButterKnife.bind(this);
         Injection.inject(this);
+
+        mainNavigationViewModel = ViewModelProviders.of(this).get(MainNavigationViewModel.class);
+        setupViewModel();
+
+        BottomNavigationMenuView bottomNavigationMenuView = (BottomNavigationMenuView) bottomNavigationView.getChildAt(0);
+        View chatBadge = LayoutInflater.from(this).inflate(R.layout.cart_content_count_layout, bottomNavigationMenuView, false);
+        BottomNavigationItemView itemView = (BottomNavigationItemView) bottomNavigationMenuView.getChildAt(1);
+
+        tvUnreadChats = chatBadge.findViewById(R.id.tvUnreadChats);
+        itemView.addView(chatBadge);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationItemListener());
+    }
+
+    private void setupViewModel() {
+        mainNavigationViewModel.getCartContentCountData().observe(this, count -> {
+            if (count == 0) {
+                tvUnreadChats.setVisibility(View.GONE);
+            } else {
+                tvUnreadChats.setVisibility(View.VISIBLE);
+                tvUnreadChats.setText(String.valueOf(count));
+            }
+        });
     }
 
     @Override
     protected void onDestroy() {
-        Toothpick.closeScope(this);
+        Injection.closeScope(this);
         super.onDestroy();
     }
 

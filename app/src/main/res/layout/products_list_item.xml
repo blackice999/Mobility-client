@@ -44,4 +44,13 @@
         app:layout_constraintEnd_toEndOf="@id/product_title"
         app:layout_constraintTop_toBottomOf="@id/product_title"
         tools:text="300" />
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/button_add_to_cart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/green"
+        android:src="@drawable/ic_add"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/product_title" />
 </androidx.constraintlayout.widget.ConstraintLayout>
