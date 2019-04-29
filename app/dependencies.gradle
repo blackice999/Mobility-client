@@ -21,6 +21,7 @@ ext {
     final rxAndroidVersion = "2.1.1"
     final roomVersion = "2.1.0-alpha07"
     final stethoVersion = "1.5.1"
+    final preferenceVersion = "1.0.0"
 
     lifeCycleDependencies = [
             lifeCycle: "androidx.lifecycle:lifecycle-extensions:$lifeCycleVersion"
@@ -121,5 +122,9 @@ ext {
 
     stethoDependencies = [
             stetho : "com.facebook.stetho:stetho:$stethoVersion"
+    ]
+    
+    preferenceDependencies = [
+            preference : "androidx.preference:preference:$preferenceVersion"
     ]
 }

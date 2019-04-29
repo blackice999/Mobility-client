@@ -110,6 +110,9 @@ dependencies {
     implementation stethoDependencies.values()
 
     implementation 'androidx.paging:paging-runtime:2.1.0'
+
+    //preference
+    implementation preferenceDependencies.values()
 }
 
 task spotbugs(type: SpotBugsTask) {
