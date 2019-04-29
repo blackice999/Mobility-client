@@ -101,6 +101,14 @@ dependencies {
 
     //rx
     implementation rxDependencies.values()
+
+    //Room
+    implementation roomDependendencies.values()
+    annotationProcessor roomAnnotationProcessorDependencies.values()
+
+    //stetho
+    implementation stethoDependencies.values()
+
     implementation 'androidx.paging:paging-runtime:2.1.0'
 
     //preference

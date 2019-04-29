@@ -11,8 +11,10 @@ import com.project.mobility.repository.main.home.HomeRepo;
 import com.project.mobility.repository.main.home.HomeRepoImpl;
 import com.project.mobility.repository.onboarding.OnboardingCategoryRepo;
 import com.project.mobility.repository.onboarding.OnboardingCategoryRepoImpl;
-import com.project.mobility.repository.products.ProductsRepo;
-import com.project.mobility.repository.products.ProductsRepoImpl;
+import com.project.mobility.repository.product.ProductsRepo;
+import com.project.mobility.repository.product.ProductsRepoImpl;
+import com.project.mobility.repository.product.detail.ProductDetailRepo;
+import com.project.mobility.repository.product.detail.ProductDetailRepoImpl;
 import com.project.mobility.util.image.GlideImageLoader;
 import com.project.mobility.util.image.ImageLoader;
 
@@ -30,5 +32,6 @@ public class ToothpickModule extends Module {
         bind(ProductsRepo.class).to(ProductsRepoImpl.class);
         bind(ImageLoader.class).to(GlideImageLoader.class);
         bind(CompositeDisposable.class).toInstance(new CompositeDisposable());
+        bind(ProductDetailRepo.class).to(ProductDetailRepoImpl.class);
     }
 }
