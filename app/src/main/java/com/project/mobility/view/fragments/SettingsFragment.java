@@ -1,109 +1,149 @@
 package com.project.mobility.view.fragments;
 
-import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 
-import androidx.fragment.app.Fragment;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-import android.widget.Toast;
+import androidx.preference.EditTextPreference;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
 
 import com.project.mobility.R;
+import com.project.mobility.di.injection.Injection;
+import com.project.mobility.view.activities.web.WebViewActivity;
 
-import org.jetbrains.annotations.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link SettingsFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link SettingsFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class SettingsFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+import javax.inject.Inject;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+import toothpick.Toothpick;
 
+public class SettingsFragment extends PreferenceFragmentCompat implements Preference.OnPreferenceChangeListener {
+
+    private static final String PLACEHOLDER_PHONE_NUMBER = "1111 222 333";
+    private static final String FEEDBACK_URL = "http://www.google.com";
+    private static final int REQUEST_CODE_ALERT_RINGTONE = 1000;
+
+    @Inject SharedPreferences sharedPreferences;
+
+    private List<String> keyList;
+    private Preference ringtonePreference;
+
+    @Inject
     public SettingsFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SettingsFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static SettingsFragment newInstance(String param1, String param2) {
-        SettingsFragment fragment = new SettingsFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+        Injection.inject(this);
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-            Toast.makeText(getContext(), mParam1, Toast.LENGTH_SHORT).show();
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+        setPreferencesFromResource(R.xml.settings_preference_screen, rootKey);
+        keyList = new ArrayList<>();
+        setupKeyList();
+        setupPreferences();
+    }
+
+    @Override
+    public boolean onPreferenceChange(Preference preference, Object newValue) {
+        if (keyList.contains(preference.getKey())) {
+            preference.setSummary((CharSequence) newValue);
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean onPreferenceTreeClick(Preference preference) {
+        if (preference.getKey().equals(getString(R.string.key_list_ringtone))) {
+            handleRingtoneChange();
+            return true;
+        } else {
+            return super.onPreferenceTreeClick(preference);
         }
     }
 
-    @Override
-    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_settings, container, false);
-        TextView textView = view.findViewById(R.id.settings_text);
-        textView.setText(mParam1);
-        return view;
+    private void handleRingtoneChange() {
+        Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true);
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, true);
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_DEFAULT_URI, Settings.System.DEFAULT_NOTIFICATION_URI);
+
+        String existingValue = sharedPreferences.getString(getString(R.string.key_list_ringtone), "");
+        if (existingValue != null) {
+            if (existingValue.length() == 0) {
+                // Select "Silent"
+                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, (Uri) null);
+            } else {
+                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, Uri.parse(existingValue));
+            }
+        } else {
+            // No ringtone has been selected, set to the default
+            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, Settings.System.DEFAULT_NOTIFICATION_URI);
+        }
+
+        startActivityForResult(intent, REQUEST_CODE_ALERT_RINGTONE);
     }
 
     @Override
-    public void onAttach(@NotNull Context context) {
-        super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CODE_ALERT_RINGTONE && data != null) {
+            setRingtone(data);
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    private void setRingtone(Intent data) {
+        Uri ringtoneUri = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
+        if (ringtoneUri != null) {
+            setRingtonePreferenceValue(ringtoneUri.toString());
+            Ringtone ringtone = RingtoneManager.getRingtone(getContext(), ringtoneUri);
+            ringtonePreference.setSummary(ringtone.getTitle(getContext()));
+        } else {
+            // "Silent" was selected
+            setRingtonePreferenceValue("");
+            ringtonePreference.setSummary("");
+        }
+    }
+
+    private void setRingtonePreferenceValue(String ringtone) {
+        sharedPreferences.edit().putString(getString(R.string.key_list_ringtone), ringtone).apply();
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
+    public void onDestroy() {
+        super.onDestroy();
+        Toothpick.closeScope(this);
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+    private void setupPreferences() {
+        EditTextPreference deliveryAddressPreference = (EditTextPreference) findPreference(getString(R.string.key_delivery_address));
+        deliveryAddressPreference.setOnPreferenceChangeListener(this);
+        deliveryAddressPreference.setSummary(sharedPreferences.getString(getString(R.string.key_delivery_address), ""));
+
+        EditTextPreference phoneNumberPreference = (EditTextPreference) findPreference(getString(R.string.key_phone_number));
+        phoneNumberPreference.setOnPreferenceChangeListener(this);
+        phoneNumberPreference.setSummary(sharedPreferences.getString(getString(R.string.key_phone_number), PLACEHOLDER_PHONE_NUMBER));
+
+        ringtonePreference = findPreference(getString(R.string.key_list_ringtone));
+        ringtonePreference.setOnPreferenceChangeListener(this);
+        ringtonePreference.setSummary(sharedPreferences.getString(getString(R.string.key_list_ringtone), ""));
+
+        Preference feedbackPreference = findPreference(getString(R.string.key_feedback));
+        Intent intent = new Intent(getContext(), WebViewActivity.class);
+        intent.putExtra(WebViewActivity.KEY_URL, FEEDBACK_URL);
+        feedbackPreference.setIntent(intent);
+    }
+
+    private void setupKeyList() {
+        keyList.add(getString(R.string.key_delivery_address));
+        keyList.add(getString(R.string.key_phone_number));
+        keyList.add(getString(R.string.key_list_ringtone));
     }
 }
