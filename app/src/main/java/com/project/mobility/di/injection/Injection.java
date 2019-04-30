@@ -18,5 +18,9 @@ public final class Injection {
         scope.installModules(new SmoothieApplicationModule(MobilityApplication.getInstance()), new ToothpickModule(MobilityApplication.getInstance()));
         Toothpick.inject(object, scope);
     }
+
+    public static void closeScope(Object object) {
+        Toothpick.closeScope(object);
+    }
 }
 

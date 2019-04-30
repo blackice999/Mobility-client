@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.project.mobility.di.injection.Injection;
 import com.project.mobility.model.product.Product;
+import com.project.mobility.model.product.ProductsModel;
 import com.project.mobility.model.product.detail.ProductDetailModel;
 
 import java.util.concurrent.TimeUnit;
@@ -20,19 +21,21 @@ import io.reactivex.observers.DisposableObserver;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
-import toothpick.Toothpick;
 
 public class ProductDetailViewModel extends ViewModel {
     @Inject ProductDetailModel productDetailModel;
+    @Inject ProductsModel productsModel;
     @Inject CompositeDisposable compositeDisposable;
 
     private MutableLiveData<Product> productMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<Boolean> loadingMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<Boolean> repoErrorMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<Integer> imagePositionMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<Boolean> addToCartMutableLiveData = new MutableLiveData<>();
 
     private int productId;
     private int position;
+    private Product currentProduct;
 
     @Inject
     public ProductDetailViewModel() {
@@ -49,6 +52,7 @@ public class ProductDetailViewModel extends ViewModel {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(product -> {
+                    currentProduct = product;
                     loopImages(product.getImagesUrl().size());
                     return Single.just(product);
                 })
@@ -117,12 +121,31 @@ public class ProductDetailViewModel extends ViewModel {
         return imagePositionMutableLiveData;
     }
 
+    public MutableLiveData<Boolean> getAddToCart() {
+        return addToCartMutableLiveData;
+    }
+
+    public void addToCart() {
+        compositeDisposable.add(productsModel.addToCart(currentProduct)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(() -> {
+                    Timber.d("Product added successfully to cart");
+                    addToCartMutableLiveData.setValue(true);
+                }, throwable -> {
+                    Timber.d("Failed adding product to cart");
+                    throwable.printStackTrace();
+                    addToCartMutableLiveData.setValue(false);
+                })
+        );
+    }
+
     protected void onCleared() {
         super.onCleared();
         if (compositeDisposable != null) {
             compositeDisposable.dispose();
         }
 
-        Toothpick.closeScope(this);
+        Injection.closeScope(this);
     }
 }

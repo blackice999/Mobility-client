@@ -21,8 +21,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import toothpick.Toothpick;
-
 public class SettingsFragment extends PreferenceFragmentCompat implements Preference.OnPreferenceChangeListener {
 
     private static final String PLACEHOLDER_PHONE_NUMBER = "1111 222 333";
@@ -119,7 +117,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Toothpick.closeScope(this);
+        Injection.closeScope(this);
     }
 
     private void setupPreferences() {

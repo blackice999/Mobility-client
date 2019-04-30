@@ -9,6 +9,8 @@ import androidx.appcompat.widget.AppCompatImageView;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 
 public interface ImageLoader {
+    String PLACEHOLDER_IMAGE_URL = "https://via.placeholder.com/300x300.png?text=Mobility";
+
     void load(Context context, String url, AppCompatImageView target);
 
     void loadWithPlaceholder(Context context, String url, AppCompatImageView target, Drawable placeHolderDrawable);

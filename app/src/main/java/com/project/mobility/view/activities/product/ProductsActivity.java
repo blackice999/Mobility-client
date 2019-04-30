@@ -3,6 +3,7 @@ package com.project.mobility.view.activities.product;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatTextView;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.project.mobility.R;
+import com.project.mobility.model.product.Product;
 import com.project.mobility.view.activities.product.adapter.ProductsRecyclerViewAdapter;
 import com.project.mobility.view.activities.product.detail.ProductDetailActivity;
 import com.project.mobility.viewmodel.product.ProductsViewModel;
@@ -25,7 +27,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
-public class ProductsActivity extends AppCompatActivity {
+public class ProductsActivity extends AppCompatActivity implements ProductsRecyclerViewAdapter.AddToCartListener {
     public static final String KEY_CATEGORY_ID = "category_item_id";
 
     @BindView(R.id.toolbar) Toolbar toolbar;
@@ -121,7 +123,23 @@ public class ProductsActivity extends AppCompatActivity {
             if (products != null) {
                 productsRecyclerViewAdapter.setProductList(products);
                 productsRecyclerView.setAdapter(productsRecyclerViewAdapter);
+                productsRecyclerViewAdapter.setAddToCartListener(ProductsActivity.this);
             }
         });
+
+        productsViewModel.getAddedToCartStatus().observe(this, addedToCart -> {
+            if (addedToCart != null) {
+                if (addedToCart) {
+                    Toast.makeText(this, "Added successfully to cart", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "There was an error adding to cart", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onAddToCart(Product product) {
+        productsViewModel.addToCart(product);
     }
 }

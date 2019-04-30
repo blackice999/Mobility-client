@@ -12,8 +12,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import toothpick.Toothpick;
-
 public class HomeViewModel extends ViewModel {
     @Inject HomeModel homeModel;
     private MutableLiveData<List<Category>> homeLiveData = new MutableLiveData<>();
@@ -30,6 +28,6 @@ public class HomeViewModel extends ViewModel {
     @Override
     protected void onCleared() {
         super.onCleared();
-        Toothpick.closeScope(this);
+        Injection.closeScope(this);
     }
 }

@@ -30,4 +30,8 @@
     <string name="phone_number_preference_title">Phone number</string>
     <string name="feedback_preference_category_title">Feedback</string>
     <string name="feedback_preference_title">Send feedback</string>
+    <string name="empty_cart_message">The cart is empty</string>
+    <string name="purchase">Purchase</string>
+    <string name="cart">Cart</string>
+    <string name="product_quantity">Quantity:\n  %1$d</string>
 </resources>

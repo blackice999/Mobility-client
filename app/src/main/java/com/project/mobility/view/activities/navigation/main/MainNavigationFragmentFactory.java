@@ -3,7 +3,7 @@ package com.project.mobility.view.activities.navigation.main;
 import com.project.mobility.R;
 import com.project.mobility.view.activities.navigation.FragmentNavigationFactory;
 import com.project.mobility.view.activities.navigation.NavigationFragment;
-import com.project.mobility.view.fragments.CartFragment;
+import com.project.mobility.view.fragments.cart.CartFragment;
 import com.project.mobility.view.fragments.FavoritesFragment;
 import com.project.mobility.view.fragments.home.HomeFragment;
 import com.project.mobility.view.fragments.SettingsFragment;

@@ -17,7 +17,6 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
-import toothpick.Toothpick;
 
 public class ProductsViewModel extends ViewModel {
 
@@ -30,6 +29,7 @@ public class ProductsViewModel extends ViewModel {
     private MutableLiveData<List<Product>> productMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<Boolean> loadingMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<Boolean> repoErrorLoadingMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<Boolean> addedToCartStatusMutableLiveData = new MutableLiveData<>();
 
     public ProductsViewModel() {
         Injection.inject(this);
@@ -86,6 +86,10 @@ public class ProductsViewModel extends ViewModel {
         return repoErrorLoadingMutableLiveData;
     }
 
+    public MutableLiveData<Boolean> getAddedToCartStatus() {
+        return addedToCartStatusMutableLiveData;
+    }
+
     @Override
     protected void onCleared() {
         super.onCleared();
@@ -93,6 +97,21 @@ public class ProductsViewModel extends ViewModel {
             compositeDisposable.dispose();
         }
 
-        Toothpick.closeScope(this);
+        Injection.closeScope(this);
+    }
+
+    public void addToCart(Product product) {
+        compositeDisposable.add(productsModel.addToCart(product)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(() -> {
+                    Timber.d("Product added successfully to cart");
+                    addedToCartStatusMutableLiveData.setValue(true);
+                }, throwable -> {
+                    Timber.d("Failed adding product to cart");
+                    throwable.printStackTrace();
+                    addedToCartStatusMutableLiveData.setValue(false);
+                })
+        );
     }
 }

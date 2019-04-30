@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,21 +27,24 @@ import butterknife.ButterKnife;
 
 public class ProductsRecyclerViewAdapter extends RecyclerView.Adapter<ProductsRecyclerViewAdapter.ViewHolder> {
 
-    private static final String PLACEHOLDER_IMAGE_URL = "https://via.placeholder.com/300x300.png?text=Mobility";
-
     @Inject ImageLoader imageLoader;
 
     private List<Product> productList;
     private Context context;
     private View.OnClickListener itemClickListener;
+    private AddToCartListener addToCartListener;
+
+    public ProductsRecyclerViewAdapter(Context context) {
+        Injection.inject(this);
+        this.context = context;
+    }
 
     public void setItemClickListener(View.OnClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
     }
 
-    public ProductsRecyclerViewAdapter(Context context) {
-        Injection.inject(this);
-        this.context = context;
+    public void setAddToCartListener(AddToCartListener addToCartListener) {
+        this.addToCartListener = addToCartListener;
     }
 
     public void setProductList(List<Product> productList) {
@@ -49,6 +53,12 @@ public class ProductsRecyclerViewAdapter extends RecyclerView.Adapter<ProductsRe
 
     public long getItemIdByPosition(int position) {
         return productList.get(position).getId();
+    }
+
+    @Override
+    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView);
+        Injection.closeScope(this);
     }
 
     @NonNull
@@ -72,6 +82,7 @@ public class ProductsRecyclerViewAdapter extends RecyclerView.Adapter<ProductsRe
         @BindView(R.id.image_product) AppCompatImageView coverImage;
         @BindView(R.id.product_title) AppCompatTextView productTitle;
         @BindView(R.id.product_price) AppCompatTextView productPrice;
+        @BindView(R.id.button_add_to_cart) AppCompatImageButton buttonAddToCart;
 
         private View view;
 
@@ -84,6 +95,8 @@ public class ProductsRecyclerViewAdapter extends RecyclerView.Adapter<ProductsRe
         public void bind(Product product) {
             productTitle.setText(product.getName());
             view.setOnClickListener(v -> itemClickListener.onClick(v));
+            buttonAddToCart.setOnClickListener(view -> addToCartListener.onAddToCart(product));
+
             String priceWithSymbol = product.getPrice() + CurrencyUtil.getLocalCurrencySymbol();
             productPrice.setText(priceWithSymbol);
 
@@ -97,8 +110,12 @@ public class ProductsRecyclerViewAdapter extends RecyclerView.Adapter<ProductsRe
                 );
             } else {
                 imageLoader.clear(context, coverImage);
-                imageLoader.load(context, PLACEHOLDER_IMAGE_URL, coverImage);
+                imageLoader.load(context, ImageLoader.PLACEHOLDER_IMAGE_URL, coverImage);
             }
         }
+    }
+
+    public interface AddToCartListener {
+        void onAddToCart(Product product);
     }
 }
