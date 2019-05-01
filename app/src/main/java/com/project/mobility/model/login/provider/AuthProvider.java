@@ -1,5 +1,10 @@
 package com.project.mobility.model.login.provider;
 
+import com.project.mobility.model.user.User;
+
+import io.reactivex.Maybe;
+import io.reactivex.Single;
+
 public abstract class AuthProvider {
     private String token;
 
@@ -11,9 +16,9 @@ public abstract class AuthProvider {
         return token;
     }
 
-    public abstract void authenticate();
+    public abstract Maybe<User> authenticate();
 
-    public abstract boolean logout();
+    public abstract Single<Boolean> logout();
 
     public abstract String getProviderName();
 }

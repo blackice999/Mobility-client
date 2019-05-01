@@ -32,4 +32,7 @@ public interface CartDao extends BaseDao<CartEntity> {
 
     @Query("SELECT SUM(quantity * price) FROM cart")
     Single<Integer> getCartTotalPrice();
+
+    @Query("DELETE FROM cart")
+    Completable deleteAll();
 }

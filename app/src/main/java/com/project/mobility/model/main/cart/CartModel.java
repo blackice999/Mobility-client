@@ -1,8 +1,8 @@
 package com.project.mobility.model.main.cart;
 
 import com.project.mobility.di.injection.Injection;
-import com.project.mobility.model.product.Product;
 import com.project.mobility.model.product.cart.CartProduct;
+import com.project.mobility.repository.login.LoginRepo;
 import com.project.mobility.repository.main.cart.CartRepo;
 
 import java.util.List;
@@ -10,11 +10,13 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.reactivex.Completable;
+import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 
 public class CartModel {
     @Inject CartRepo cartRepo;
+    @Inject LoginRepo loginRepo;
 
     @Inject
     public CartModel() {
@@ -39,5 +41,13 @@ public class CartModel {
 
     public Single<Integer> getCartTotalPrice() {
         return cartRepo.getCartTotalPrice();
+    }
+
+    public Completable purchase() {
+        return cartRepo.purchase();
+    }
+
+    public Maybe<Integer> getLoggedInUserCount() {
+        return loginRepo.getLoggedInUserCount();
     }
 }
