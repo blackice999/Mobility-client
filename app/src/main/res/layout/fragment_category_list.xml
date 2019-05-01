@@ -31,10 +31,9 @@
         android:name="com.project.mobility.view.fragments.onboarding.CategoryPageFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layoutManager="LinearLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/selected_categories_text"
         tools:context=".view.fragments.onboarding.CategoryPageFragment"
-        tools:listitem="@layout/fragment_category" />
+        tools:listitem="@layout/main_category_list" />
 </androidx.constraintlayout.widget.ConstraintLayout>

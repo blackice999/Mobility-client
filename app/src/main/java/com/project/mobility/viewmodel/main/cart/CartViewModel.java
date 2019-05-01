@@ -12,9 +12,11 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.Completable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableObserver;
+import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
@@ -29,10 +31,22 @@ public class CartViewModel extends ViewModel {
     private MutableLiveData<Boolean> clearProductMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<Boolean> decreaseProductAmountMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<Boolean> increaseProductAmountMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<Integer> totalCartPriceMutableLiveData = new MutableLiveData<>();
 
     public CartViewModel() {
         Injection.inject(this);
         getCart();
+        getCartTotalPrice();
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        if (compositeDisposable != null) {
+            compositeDisposable.dispose();
+        }
+
+        Injection.closeScope(this);
     }
 
     private void getCart() {
@@ -41,7 +55,6 @@ public class CartViewModel extends ViewModel {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(new DisposableObserver<List<CartProduct>>() {
-
                     @Override
                     public void onNext(List<CartProduct> products) {
                         Timber.d("Fetch cart products");
@@ -59,6 +72,26 @@ public class CartViewModel extends ViewModel {
                     @Override
                     public void onComplete() {
                         Timber.d("Complete fetching cart products");
+                    }
+                })
+        );
+    }
+
+    private void getCartTotalPrice() {
+        compositeDisposable.add(cartModel.getCartTotalPrice()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableSingleObserver<Integer>() {
+                    @Override
+                    public void onSuccess(Integer integer) {
+                        Timber.d("Got total cart price: %s", integer);
+                        totalCartPriceMutableLiveData.setValue(integer);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Timber.d("Failed returning total cart price");
+                        e.printStackTrace();
                     }
                 })
         );
@@ -88,18 +121,17 @@ public class CartViewModel extends ViewModel {
         return increaseProductAmountMutableLiveData;
     }
 
-    @Override
-    protected void onCleared() {
-        super.onCleared();
-        if (compositeDisposable != null) {
-            compositeDisposable.dispose();
-        }
-
-        Injection.closeScope(this);
+    public MutableLiveData<Integer> getTotalCartPriceData() {
+        return totalCartPriceMutableLiveData;
     }
 
     public void decreaseProductAmount(int productId) {
         compositeDisposable.add(cartModel.decreaseProductAmount(productId)
+                .andThen(cartModel.getCartTotalPrice())
+                .flatMapCompletable(totalPrice -> {
+                    totalCartPriceMutableLiveData.postValue(totalPrice);
+                    return Completable.complete();
+                })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(() -> {
@@ -115,6 +147,11 @@ public class CartViewModel extends ViewModel {
 
     public void increaseProductAmount(int productId) {
         compositeDisposable.add(cartModel.increaseProductAmount(productId)
+                .andThen(cartModel.getCartTotalPrice())
+                .flatMapCompletable(totalPrice -> {
+                    totalCartPriceMutableLiveData.postValue(totalPrice);
+                    return Completable.complete();
+                })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(() -> {
@@ -130,8 +167,14 @@ public class CartViewModel extends ViewModel {
 
     public void clearProduct(int productId) {
         compositeDisposable.add(cartModel.clearProduct(productId)
+                .andThen(cartModel.getCartTotalPrice())
+                .flatMapCompletable(totalPrice -> {
+                    totalCartPriceMutableLiveData.postValue(totalPrice);
+                    return Completable.complete();
+                })
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()).subscribe(() -> {
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(() -> {
                     Timber.d("Product cleared from cart");
                     clearProductMutableLiveData.setValue(true);
                 }, throwable -> {

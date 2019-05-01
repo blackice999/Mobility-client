@@ -6,6 +6,7 @@ import java.util.List;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
+import io.reactivex.Single;
 
 public interface CartRepo {
     Observable<List<CartProduct>> getCart();
@@ -15,4 +16,6 @@ public interface CartRepo {
     Completable decreaseProductAmount(int productId);
 
     Completable increaseProductAmount(int productId);
+
+    Single<Integer> getCartTotalPrice();
 }

@@ -13,6 +13,8 @@ public interface ImageLoader {
 
     void load(Context context, String url, AppCompatImageView target);
 
+    void load(Context context, @DrawableRes int resourceId, AppCompatImageView target);
+
     void loadWithPlaceholder(Context context, String url, AppCompatImageView target, Drawable placeHolderDrawable);
 
     void loadWithPlaceholder(Context context, String url, AppCompatImageView target, @DrawableRes int placeHolderDrawableId);
@@ -24,5 +26,4 @@ public interface ImageLoader {
     void loadCropped(Context context, String url, AppCompatImageView target);
 
     void clear(Context context, AppCompatImageView target);
-
 }

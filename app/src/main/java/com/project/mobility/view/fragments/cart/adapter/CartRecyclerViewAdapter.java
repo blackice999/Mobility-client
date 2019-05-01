@@ -28,21 +28,23 @@ import butterknife.ButterKnife;
 
 public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerViewAdapter.ViewHolder> {
     @Inject ImageLoader imageLoader;
+    @Inject Context context;
 
     private List<CartProduct> products;
-    private Context context;
     private CartQuantityObserver cartQuantityObserver;
 
-    public CartRecyclerViewAdapter(List<CartProduct> products, Context context) {
+    @Inject
+    public CartRecyclerViewAdapter() {
         Injection.inject(this);
+    }
+
+    public void setProducts(List<CartProduct> products) {
         this.products = products;
-        this.context = context;
     }
 
     public void setCartQuantityObserver(CartQuantityObserver cartQuantityObserver) {
         this.cartQuantityObserver = cartQuantityObserver;
     }
-
 
     @Override
     public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
@@ -65,15 +67,6 @@ public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerVi
     @Override
     public int getItemCount() {
         return products.size();
-    }
-
-    public int getCartPrice() {
-        int sum = 0;
-        for (CartProduct product : products) {
-            sum += product.getPrice() * product.getQuantity();
-        }
-
-        return sum;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

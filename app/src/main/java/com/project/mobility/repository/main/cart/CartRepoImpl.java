@@ -12,6 +12,7 @@ import javax.inject.Inject;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
+import io.reactivex.Single;
 
 public class CartRepoImpl implements CartRepo {
 
@@ -45,6 +46,11 @@ public class CartRepoImpl implements CartRepo {
     @Override
     public Completable increaseProductAmount(int productId) {
         return cartDao.productCount(productId).flatMapCompletable(cartElement -> cartDao.updateQuantity(productId, cartElement.quantity + 1));
+    }
+
+    @Override
+    public Single<Integer> getCartTotalPrice() {
+        return cartDao.getCartTotalPrice();
     }
 
     private Observable<List<CartProduct>> getFromLocal() {

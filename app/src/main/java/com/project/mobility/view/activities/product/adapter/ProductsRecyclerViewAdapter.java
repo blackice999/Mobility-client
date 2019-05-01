@@ -28,15 +28,15 @@ import butterknife.ButterKnife;
 public class ProductsRecyclerViewAdapter extends RecyclerView.Adapter<ProductsRecyclerViewAdapter.ViewHolder> {
 
     @Inject ImageLoader imageLoader;
+    @Inject Context context;
 
     private List<Product> productList;
-    private Context context;
     private View.OnClickListener itemClickListener;
     private AddToCartListener addToCartListener;
 
-    public ProductsRecyclerViewAdapter(Context context) {
+    @Inject
+    public ProductsRecyclerViewAdapter() {
         Injection.inject(this);
-        this.context = context;
     }
 
     public void setItemClickListener(View.OnClickListener itemClickListener) {

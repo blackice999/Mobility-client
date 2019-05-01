@@ -26,9 +26,10 @@ import butterknife.ButterKnife;
 
 public class HomeFragment extends Fragment {
     private static final int LIST_COLUMN_COUNT = 2;
-    @BindView(R.id.categories_list) RecyclerView recyclerView;
 
     @Inject HomeRecyclerViewAdapter homeRecyclerViewAdapter;
+
+    @BindView(R.id.categories_list) RecyclerView recyclerView;
 
     private HomeViewModel homeViewModel;
 
@@ -45,11 +46,16 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_categories, container, false);
+        View view = inflater.inflate(R.layout.fragment_home, container, false);
         ButterKnife.bind(this, view);
         setupList();
         return view;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Injection.inject(this);
     }
 
     private void setupList() {
