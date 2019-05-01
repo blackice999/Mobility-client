@@ -4,12 +4,12 @@ public class Category {
 
     private long id;
     private String name;
-    private String image;
+    private String imageName;
 
-    public Category(long id, String name, String image) {
+    public Category(long id, String name, String imageName) {
         this.id = id;
         this.name = name;
-        this.image = image;
+        this.imageName = imageName;
     }
 
     public long getId() {
@@ -20,7 +20,7 @@ public class Category {
         return name;
     }
 
-    public String getImage() {
-        return image;
+    public String getImageName() {
+        return imageName;
     }
 }

@@ -14,15 +14,15 @@ import javax.inject.Inject;
 
 public class HomeViewModel extends ViewModel {
     @Inject HomeModel homeModel;
-    private MutableLiveData<List<Category>> homeLiveData = new MutableLiveData<>();
+    private MutableLiveData<List<Category>> categoriesLiveData = new MutableLiveData<>();
 
     public HomeViewModel() {
         Injection.inject(this);
-        homeLiveData.postValue(homeModel.getCategories());
+        categoriesLiveData.postValue(homeModel.getCategories());
     }
 
     public LiveData<List<Category>> getCategories() {
-        return homeLiveData;
+        return categoriesLiveData;
     }
 
     @Override

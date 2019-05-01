@@ -45,11 +45,11 @@ public class ServerUtil {
 
     public static List<Category> createDummyCategoryList() {
         List<Category> dummyItems = new ArrayList<>();
-        for (int i = 0; i < 15; i++) {
-            dummyItems.add(new Category(i, "Name " + i, "Image " + i));
-        }
 
+        dummyItems.add(new Category(0, "Batteries", "ic_battery"));
+        dummyItems.add(new Category(1, "Chargers", "ic_charger"));
+        dummyItems.add(new Category(2, "Headsets", "ic_headset"));
+        dummyItems.add(new Category(3, "Phones", "ic_phone"));
         return dummyItems;
     }
-
 }

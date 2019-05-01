@@ -23,6 +23,11 @@ public class GlideImageLoader implements ImageLoader {
     }
 
     @Override
+    public void load(Context context, int resourceId, AppCompatImageView target) {
+        GlideApp.with(context).load(resourceId).into(target);
+    }
+
+    @Override
     public void loadWithPlaceholder(Context context, String url, AppCompatImageView target, Drawable placeHolderDrawable) {
         GlideApp.with(context).load(url).placeholder(placeHolderDrawable).into(target);
     }

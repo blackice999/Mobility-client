@@ -29,4 +29,7 @@ public interface CartDao extends BaseDao<CartEntity> {
 
     @Query("SELECT COUNT(name) FROM cart")
     Maybe<Integer> getCartCount();
+
+    @Query("SELECT SUM(quantity * price) FROM cart")
+    Single<Integer> getCartTotalPrice();
 }

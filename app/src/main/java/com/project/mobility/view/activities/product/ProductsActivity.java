@@ -16,12 +16,15 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.project.mobility.R;
+import com.project.mobility.di.injection.Injection;
 import com.project.mobility.model.product.Product;
 import com.project.mobility.view.activities.product.adapter.ProductsRecyclerViewAdapter;
 import com.project.mobility.view.activities.product.detail.ProductDetailActivity;
 import com.project.mobility.viewmodel.product.ProductsViewModel;
 
 import org.jetbrains.annotations.NotNull;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,13 +33,14 @@ import timber.log.Timber;
 public class ProductsActivity extends AppCompatActivity implements ProductsRecyclerViewAdapter.AddToCartListener {
     public static final String KEY_CATEGORY_ID = "category_item_id";
 
+    @Inject ProductsRecyclerViewAdapter productsRecyclerViewAdapter;
+
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.products_list) RecyclerView productsRecyclerView;
     @BindView(R.id.progress_bar) ContentLoadingProgressBar progressBar;
     @BindView(R.id.textview_error_loading) AppCompatTextView errorLoadingDataTextView;
 
     private ProductsViewModel productsViewModel;
-    private ProductsRecyclerViewAdapter productsRecyclerViewAdapter;
     private int pageCount;
     private boolean loading = true;
     int pastVisiblesItems;
@@ -48,11 +52,11 @@ public class ProductsActivity extends AppCompatActivity implements ProductsRecyc
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_products);
         ButterKnife.bind(this);
+        Injection.inject(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         GridLayoutManager linearLayoutManager = new GridLayoutManager(this, 2);
 
-        productsRecyclerViewAdapter = new ProductsRecyclerViewAdapter(this);
         productsRecyclerView.setLayoutManager(linearLayoutManager);
         productsRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         productsRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -94,6 +98,12 @@ public class ProductsActivity extends AppCompatActivity implements ProductsRecyc
     protected void onStart() {
         super.onStart();
         setupProductsViewModel();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Injection.closeScope(this);
     }
 
     private void setupProductsViewModel() {

@@ -17,7 +17,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.project.mobility.R;
+import com.project.mobility.di.injection.Injection;
 import com.project.mobility.model.product.cart.CartProduct;
+import com.project.mobility.util.currency.CurrencyUtil;
 import com.project.mobility.view.fragments.cart.adapter.CartRecyclerViewAdapter;
 import com.project.mobility.viewmodel.main.cart.CartViewModel;
 
@@ -25,16 +27,21 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class CartFragment extends Fragment implements CartRecyclerViewAdapter.CartQuantityObserver {
+
+    @Inject CartRecyclerViewAdapter cartRecyclerViewAdapter;
 
     @BindView(R.id.cart_container) ConstraintLayout cartContainer;
     @BindView(R.id.progress_bar) ContentLoadingProgressBar progressBar;
     @BindView(R.id.textview_error_loading) AppCompatTextView errorLoadingDataTextView;
     @BindView(R.id.empty_cart_text) AppCompatTextView emptyCartText;
     @BindView(R.id.recycler_view_cart) RecyclerView recyclerView;
+    @BindView(R.id.product_total_price) AppCompatTextView totalPriceTextView;
 
     private CartViewModel cartViewModel;
 
@@ -44,6 +51,7 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Ca
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Injection.inject(this);
         cartViewModel = ViewModelProviders.of(this).get(CartViewModel.class);
         setupViewModel();
     }
@@ -51,13 +59,18 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Ca
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_cart, container, false);
         ButterKnife.bind(this, view);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
         return view;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Injection.closeScope(this);
     }
 
     private void setupViewModel() {
@@ -119,10 +132,16 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Ca
                 }
             }
         });
+
+        cartViewModel.getTotalCartPriceData().observe(this, totalPrice -> {
+            if (totalPrice != null) {
+                totalPriceTextView.setText(totalPrice + CurrencyUtil.getLocalCurrencySymbol());
+            }
+        });
     }
 
     private void showCartList(List<CartProduct> products) {
-        CartRecyclerViewAdapter cartRecyclerViewAdapter = new CartRecyclerViewAdapter(products, getContext());
+        cartRecyclerViewAdapter.setProducts(products);
         cartRecyclerViewAdapter.setCartQuantityObserver(CartFragment.this);
         recyclerView.setAdapter(cartRecyclerViewAdapter);
     }
