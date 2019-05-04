@@ -11,4 +11,6 @@ public interface ProductsRepo {
     Observable<List<Product>> getProductsByCategoryId(int id, int page);
 
     Completable addToCart(Product product);
+
+    Observable<List<Product>> searchForProducts(int categoryId, String query);
 }

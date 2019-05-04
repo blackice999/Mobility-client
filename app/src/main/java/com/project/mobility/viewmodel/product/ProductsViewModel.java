@@ -35,45 +35,6 @@ public class ProductsViewModel extends ViewModel {
         Injection.inject(this);
     }
 
-    public void setCategoryId(int categoryId) {
-        this.categoryId = categoryId;
-    }
-
-    public void setPage(int page) {
-        this.page = page;
-    }
-
-    public void fetchProducts() {
-        loadingMutableLiveData.setValue(true);
-
-        compositeDisposable.add(productsModel.getProductsByCategoryId(categoryId, page)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(new DisposableObserver<List<Product>>() {
-                    @Override
-                    public void onNext(List<Product> products) {
-                        Timber.d("Start fetching products");
-                        productMutableLiveData.postValue(products);
-                        repoErrorLoadingMutableLiveData.setValue(false);
-                        loadingMutableLiveData.setValue(false);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Timber.d("Error fetching products");
-                        e.printStackTrace();
-                        loadingMutableLiveData.setValue(false);
-                        repoErrorLoadingMutableLiveData.setValue(true);
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        Timber.d("Complete fetching products");
-                    }
-                })
-        );
-    }
-
     public LiveData<List<Product>> getProducts() {
         return productMutableLiveData;
     }
@@ -88,6 +49,24 @@ public class ProductsViewModel extends ViewModel {
 
     public MutableLiveData<Boolean> getAddedToCartStatus() {
         return addedToCartStatusMutableLiveData;
+    }
+
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public void setPage(int page) {
+        this.page = page;
+    }
+
+    public void fetchProducts() {
+        loadingMutableLiveData.setValue(true);
+
+        compositeDisposable.add(productsModel.getProductsByCategoryId(categoryId, page)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new ProductsDisposableObserver())
+        );
     }
 
     @Override
@@ -113,5 +92,38 @@ public class ProductsViewModel extends ViewModel {
                     addedToCartStatusMutableLiveData.setValue(false);
                 })
         );
+    }
+
+    public void searchForProducts(String query) {
+        loadingMutableLiveData.setValue(true);
+        compositeDisposable.add(productsModel.searchForProducts(categoryId, query)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new ProductsDisposableObserver())
+        );
+    }
+
+    private class ProductsDisposableObserver extends DisposableObserver<List<Product>> {
+
+        @Override
+        public void onNext(List<Product> products) {
+            Timber.d("Start fetching products");
+            productMutableLiveData.postValue(products);
+            repoErrorLoadingMutableLiveData.setValue(false);
+            loadingMutableLiveData.setValue(false);
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            Timber.d("Error fetching products");
+            e.printStackTrace();
+            loadingMutableLiveData.setValue(false);
+            repoErrorLoadingMutableLiveData.setValue(true);
+        }
+
+        @Override
+        public void onComplete() {
+            Timber.d("Complete fetching products");
+        }
     }
 }

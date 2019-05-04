@@ -3,6 +3,7 @@ package com.project.mobility.storage.persistence.room.dao;
 import androidx.room.Dao;
 import androidx.room.Query;
 
+import com.project.mobility.model.product.Product;
 import com.project.mobility.storage.persistence.room.entities.ProductEntity;
 
 import java.util.List;
@@ -24,4 +25,7 @@ public interface ProductDao extends BaseDao<ProductEntity> {
 
     @Query("DELETE FROM product")
     Completable deleteAll();
+
+    @Query("SELECT * FROM product WHERE category_id = :categoryId AND name LIKE '%' || :query || '%'")
+    Observable<List<ProductEntity>> search(int categoryId, String query);
 }

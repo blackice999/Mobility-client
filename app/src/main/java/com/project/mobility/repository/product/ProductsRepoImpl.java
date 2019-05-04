@@ -3,9 +3,13 @@ package com.project.mobility.repository.product;
 import com.project.mobility.app.MobilityApplication;
 import com.project.mobility.model.product.Product;
 import com.project.mobility.storage.persistence.room.AppDatabase;
+import com.project.mobility.storage.persistence.room.dao.CartDao;
+import com.project.mobility.storage.persistence.room.dao.CategoryDao;
+import com.project.mobility.storage.persistence.room.dao.ProductDao;
 import com.project.mobility.storage.persistence.room.entities.CartEntity;
 import com.project.mobility.storage.persistence.room.entities.CategoryEntity;
 import com.project.mobility.storage.persistence.room.entities.ProductEntity;
+import com.project.mobility.util.StringUtils;
 import com.project.mobility.util.server.ServerUtil;
 
 import java.util.ArrayList;
@@ -22,19 +26,24 @@ import io.reactivex.schedulers.Schedulers;
 public class ProductsRepoImpl implements ProductsRepo {
 
     private boolean isServerOnline;
-    private AppDatabase appDatabase;
+    private CartDao cartDao;
+    private ProductDao productDao;
+    private CategoryDao categoryDao;
 
     @Inject
     public ProductsRepoImpl() {
         isServerOnline = ServerUtil.isServerOnline();
-        appDatabase = MobilityApplication.getInstance().getAppDatabase();
+        AppDatabase appDatabase = MobilityApplication.getInstance().getAppDatabase();
+        cartDao = appDatabase.cartDao();
+        productDao = appDatabase.productDao();
+        categoryDao = appDatabase.categoryDao();
         addTestCategoriesToDb();
     }
 
     private void addTestCategoriesToDb() {
         CategoryEntity categoryEntity = new CategoryEntity();
         categoryEntity.categoryName = "Phones";
-        appDatabase.categoryDao().insert(categoryEntity).subscribeOn(Schedulers.io()).subscribe(new CompletableObserver() {
+        categoryDao.insert(categoryEntity).subscribeOn(Schedulers.io()).subscribe(new CompletableObserver() {
             @Override
             public void onSubscribe(Disposable d) {
 
@@ -59,20 +68,38 @@ public class ProductsRepoImpl implements ProductsRepo {
 
     @Override
     public Completable addToCart(Product product) {
-        return appDatabase.cartDao().productCount(product.getId()).flatMapCompletable(
+        return cartDao.productCount(product.getId()).flatMapCompletable(
                 cartElement -> cartElement.count == 0 ?
-                        appDatabase.cartDao().insert(convertToCartEntity(product)) :
-                        appDatabase.cartDao().updateQuantity(product.getId(), cartElement.quantity + 1)
+                        cartDao.insert(convertToCartEntity(product)) :
+                        cartDao.updateQuantity(product.getId(), cartElement.quantity + 1)
         );
+    }
+
+    @Override
+    public Observable<List<Product>> searchForProducts(int categoryId, String query) {
+        return isServerOnline ? searchRemote(categoryId, query) : searchLocal(categoryId, query);
+    }
+
+    private Observable<List<Product>> searchLocal(int categoryId, String query) {
+        return convertToProductsObservable(productDao.search(categoryId, query));
+    }
+
+    private Observable<List<Product>> searchRemote(int categoryId, String query) {
+        //TODO - search from server
+        return fetch(categoryId)
+                .flatMap(Observable::fromIterable)
+                .filter(product -> StringUtils.containsIgnoreCase(product.getName(), query))
+                .toList()
+                .toObservable();
     }
 
     private Observable<List<Product>> fetch(int categoryId) {
 
         //TODO - fetch from server
-        List<Product> productsList = ServerUtil.createDummyProductsList(categoryId);
+        List<Product> productsList = ServerUtil.getDummyProductsList(categoryId);
         return Observable.just(productsList);
 //        ProductEntity productEntity = convertToProductEntity(productsList.get(0));
-//        Completable insert = appDatabase.productDao().insert(productEntity);
+//        Completable insert = productDao.insert(productEntity);
 //        insert.subscribeOn(Schedulers.io())
 //                .observeOn(AndroidSchedulers.mainThread()).
 //                subscribe(new CompletableObserver() {
@@ -92,12 +119,12 @@ public class ProductsRepoImpl implements ProductsRepo {
 //                    }
 //                });
 
-//        return convertToProductsObservable(appDatabase.productDao().getProductsByCategoryId(categoryId).subscribeOn(Schedulers.io()));
+//        return convertToProductsObservable(productDao.getProductsByCategoryId(categoryId).subscribeOn(Schedulers.io()));
     }
 
     private Observable<List<Product>> loadFromLocal(int categoryId) {
-//        return convertToProductsObservable(appDatabase.productDao().getProductsByCategoryId(categoryId));
-        return Observable.just(ServerUtil.createDummyProductsList(categoryId));
+//        return convertToProductsObservable(productDao.getProductsByCategoryId(categoryId));
+        return Observable.just(ServerUtil.getDummyProductsList(categoryId));
     }
 
     private Observable<List<Product>> convertToProductsObservable(Observable<List<ProductEntity>> productsEntityObservable) {

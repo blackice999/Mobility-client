@@ -1,12 +1,16 @@
 package com.project.mobility.view.activities.product;
 
+import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatTextView;
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.widget.ContentLoadingProgressBar;
 import androidx.lifecycle.ViewModelProviders;
@@ -46,6 +50,8 @@ public class ProductsActivity extends AppCompatActivity implements ProductsRecyc
     int pastVisiblesItems;
     int visibleItemCount;
     int totalItemCount;
+    private MenuItem searchMenuItem;
+    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +61,9 @@ public class ProductsActivity extends AppCompatActivity implements ProductsRecyc
         Injection.inject(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        Intent intent = getIntent();
+        handleSearchIntent(intent);
         GridLayoutManager linearLayoutManager = new GridLayoutManager(this, 2);
 
         productsRecyclerView.setLayoutManager(linearLayoutManager);
@@ -88,10 +97,15 @@ public class ProductsActivity extends AppCompatActivity implements ProductsRecyc
 
         productsRecyclerViewAdapter.setItemClickListener(v -> {
             int position = productsRecyclerView.indexOfChild(v);
-            Intent intent = new Intent(this, ProductDetailActivity.class);
-            intent.putExtra(ProductDetailActivity.KEY_PRODUCT_ID, (int) productsRecyclerViewAdapter.getItemIdByPosition(position));
-            startActivity(intent);
+            Intent intentProductDetail = new Intent(this, ProductDetailActivity.class);
+            intentProductDetail.putExtra(ProductDetailActivity.KEY_PRODUCT_ID, (int) productsRecyclerViewAdapter.getItemIdByPosition(position));
+            startActivity(intentProductDetail);
         });
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        handleSearchIntent(intent);
     }
 
     @Override
@@ -101,9 +115,43 @@ public class ProductsActivity extends AppCompatActivity implements ProductsRecyc
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        invalidateOptionsMenu();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.products_menu, menu);
+        searchMenuItem = menu.findItem(R.id.action_search);
+        searchView = (SearchView) searchMenuItem.getActionView();
+
+        SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        searchView.setQuery("", false);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         Injection.closeScope(this);
+    }
+
+    private void handleSearchIntent(Intent intent) {
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            searchForProducts(query);
+        }
+    }
+
+    private void searchForProducts(String query) {
+        productsViewModel.searchForProducts(query);
     }
 
     private void setupProductsViewModel() {

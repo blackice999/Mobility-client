@@ -4,7 +4,6 @@
     <string name="facebook_app_id">2614116595326547</string>
     <string name="fb_login_protocol_scheme">fb2614116595326547</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="onboarding_selected_categories">select at least 2 categories. You have selected: %1$d</string>
     <string name="navigation_finish_message">Finish</string>
     <string name="login_message">Login</string>
@@ -31,4 +30,7 @@
     <string name="product_quantity">Quantity:\n  %1$d</string>
     <string name="authenticate_title">Authenticate with fingerprint to continue</string>
     <string name="authenticate_other_method">Negative Button</string>
+    <string name="search_hint">Search products in this category</string>
+    <string name="title_activity_searchable">SearchableActivity</string>
+    <string name="search_menu_text">Search</string>
 </resources>
