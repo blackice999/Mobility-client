@@ -64,37 +64,27 @@ public class ProductDetailActivity extends AppCompatActivity {
     private void setupViewModel() {
         productDetailViewModel.fetchProduct();
         productDetailViewModel.getLoading().observe(this, loading -> {
-            if (loading != null) {
-                progressBar.setVisibility(loading ? View.VISIBLE : View.GONE);
-                productContainer.setVisibility(loading ? View.GONE : View.VISIBLE);
-            }
+            progressBar.setVisibility(loading ? View.VISIBLE : View.GONE);
+            productContainer.setVisibility(loading ? View.GONE : View.VISIBLE);
         });
 
         productDetailViewModel.getRepoErrorData().observe(this, repoError -> {
-            if (repoError != null) {
-                if (repoError) {
-                    showError();
-                } else {
-                    hideError();
-                }
+            if (repoError) {
+                showError();
+            } else {
+                hideError();
             }
         });
 
-        productDetailViewModel.getProduct().observe(this, product -> {
-            if (product != null) {
-                showProduct(product);
-            }
-        });
+        productDetailViewModel.getProduct().observe(this, this::showProduct);
 
         productDetailViewModel.getImagePosition().observe(this, this::changeImageViewPagerElementPosition);
 
         productDetailViewModel.getAddToCart().observe(this, addedToCart -> {
-            if (addedToCart != null) {
-                if (addedToCart) {
-                    Toast.makeText(this, "Added successfully to cart", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(this, "There was an error adding to cart", Toast.LENGTH_SHORT).show();
-                }
+            if (addedToCart) {
+                Toast.makeText(this, "Added successfully to cart", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "There was an error adding to cart", Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -81,7 +81,6 @@ public class CategoryPageFragment extends Fragment implements FragmentFinishedLi
         ButterKnife.bind(this, view);
         setSelectedCategoriesCountMessage(0);
 
-        // Set the adapter
         Context context = view.getContext();
         if (mColumnCount <= 1) {
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
@@ -89,6 +88,11 @@ public class CategoryPageFragment extends Fragment implements FragmentFinishedLi
             recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
         }
 
+        setupViewModel();
+        return view;
+    }
+
+    private void setupViewModel() {
         onboardingCategoryViewModel.getCategories().observe(getViewLifecycleOwner(), categories -> {
             adapter.setCategories(categories);
             recyclerView.setAdapter(adapter);
@@ -115,8 +119,6 @@ public class CategoryPageFragment extends Fragment implements FragmentFinishedLi
 
             adapter.setSelectionTracker(selectionTracker);
         });
-
-        return view;
     }
 
     private void setSelectedCategoriesPosition(Selection<Long> selectedCategories) {

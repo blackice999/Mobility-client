@@ -152,85 +152,64 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Ca
 
     private void setupViewModel() {
         cartViewModel.getCartMutableLiveData().observe(this, products -> {
-            if (products != null) {
-                if (products.isEmpty()) {
-                    emptyCartText.setVisibility(View.VISIBLE);
-                    cartContainer.setVisibility(View.GONE);
-                } else {
-                    showCartList(products);
-                }
+            if (products.isEmpty()) {
+                emptyCartText.setVisibility(View.VISIBLE);
+                cartContainer.setVisibility(View.GONE);
+            } else {
+                showCartList(products);
             }
         });
 
         cartViewModel.getLoadingMutableLiveData().observe(this, loading -> {
-            if (loading != null) {
-                progressBar.setVisibility(loading ? View.VISIBLE : View.GONE);
-                cartContainer.setVisibility(loading ? View.GONE : View.VISIBLE);
-
-            }
+            progressBar.setVisibility(loading ? View.VISIBLE : View.GONE);
+            cartContainer.setVisibility(loading ? View.GONE : View.VISIBLE);
         });
 
         cartViewModel.getRepoErrorMutableLiveData().observe(this, repoError -> {
-            if (repoError != null) {
-                if (repoError) {
-                    showError();
-                } else {
-                    hideError();
-                }
+            if (repoError) {
+                showError();
+            } else {
+                hideError();
             }
         });
 
         cartViewModel.getIncreaseProductAmount().observe(this, increased -> {
-            if (increased != null) {
-                if (increased) {
-                    Toast.makeText(getContext(), "Successfully increased amount", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getContext(), "Failed increasing amount", Toast.LENGTH_SHORT).show();
-                }
+            if (increased) {
+                Toast.makeText(getContext(), "Successfully increased amount", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getContext(), "Failed increasing amount", Toast.LENGTH_SHORT).show();
             }
         });
 
         cartViewModel.getDecreaseProductAmount().observe(this, decreased -> {
-            if (decreased != null) {
-                if (decreased) {
-                    Toast.makeText(getContext(), "Successfully decreased amount", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getContext(), "Failed decreasing amount", Toast.LENGTH_SHORT).show();
-                }
+            if (decreased) {
+                Toast.makeText(getContext(), "Successfully decreased amount", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getContext(), "Failed decreasing amount", Toast.LENGTH_SHORT).show();
             }
         });
 
         cartViewModel.getClearProduct().observe(this, cleared -> {
-            if (cleared != null) {
-                if (cleared) {
-                    Toast.makeText(getContext(), "Successfully cleared product", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getContext(), "Failed clear product", Toast.LENGTH_SHORT).show();
-                }
+            if (cleared) {
+                Toast.makeText(getContext(), "Successfully cleared product", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getContext(), "Failed clear product", Toast.LENGTH_SHORT).show();
             }
         });
 
-        cartViewModel.getTotalCartPriceData().observe(this, totalPrice -> {
-            if (totalPrice != null) {
-                totalPriceTextView.setText(totalPrice + CurrencyUtil.getLocalCurrencySymbol());
-            }
-        });
+        cartViewModel.getTotalCartPriceData().observe(this, totalPrice -> totalPriceTextView.setText(totalPrice + CurrencyUtil.getLocalCurrencySymbol()));
 
         cartViewModel.getPurchaseStatus().observe(this, purchased -> {
-            if (purchased != null) {
-                if (purchased) {
-                    Toast.makeText(getContext(), "Purchase succesful", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getContext(), "Purchase failed", Toast.LENGTH_SHORT).show();
-                }
+            if (purchased) {
+                Toast.makeText(getContext(), "Purchase succesful", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getContext(), "Purchase failed", Toast.LENGTH_SHORT).show();
             }
         });
 
         cartViewModel.canPurchase().observe(this, canPurchase -> {
-            if (canPurchase != null) {
-                buttonPurchase.setVisibility(canPurchase ? View.VISIBLE : View.GONE);
-                loginToPurchaseButton.setVisibility(canPurchase ? View.GONE : View.VISIBLE);
-            }
+            buttonPurchase.setVisibility(canPurchase ? View.VISIBLE : View.GONE);
+            loginToPurchaseButton.setVisibility(canPurchase ? View.GONE : View.VISIBLE);
         });
     }
 
