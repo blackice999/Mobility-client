@@ -18,4 +18,6 @@ public interface CartRepo {
     Completable increaseProductAmount(int productId);
 
     Single<Integer> getCartTotalPrice();
+
+    Completable purchase();
 }

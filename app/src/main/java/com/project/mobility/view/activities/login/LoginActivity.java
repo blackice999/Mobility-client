@@ -6,6 +6,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProviders;
+
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -27,8 +30,6 @@ import com.project.mobility.viewmodel.login.LoginViewModel;
 
 import javax.inject.Inject;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProviders;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -59,6 +60,8 @@ public class LoginActivity extends AppCompatActivity {
         loginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
 //        editTextEmail.addTextChangedListener(new GenericTextWatcher(editTextEmail, (TextInputLayout) editTextEmail.getParent().getParent()));
 
+        setupViewModel();
+
         // Initialize Facebook Login button
         mCallbackManager = CallbackManager.Factory.create();
         facebookLoginButton.setReadPermissions(FACEBOOK_EMAIL_PERMISSIONS, FACEBOOK_PUBLIC_PROFILE_PERMISSIONS);
@@ -83,19 +86,37 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    private void setupViewModel() {
+        loginViewModel.getUserAuthenticate().observe(this, authenticated -> {
+            if (authenticated != null) {
+                if (authenticated) {
+                    Toast.makeText(this, "Authenticated successfully", Toast.LENGTH_SHORT).show();
+                    launchSuccessScreen();
+                    preferences.setBoolean(Preferences.KEY_AUTH_IS_SPLASHSCREEN_LAUNCHED, true);
+                } else {
+                    Toast.makeText(this, "Authentication failed", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        loginViewModel.getUserLogout().observe(this, loggedOut -> {
+            if (loggedOut != null) {
+                if (loggedOut) {
+                    Toast.makeText(this, "Logged out successfully", Toast.LENGTH_SHORT).show();
+                    logoutButton.setVisibility(View.GONE);
+                    preferences.clearPreferences(Preferences.PREFERENCE_TYPE_AUTH);
+                } else {
+                    Toast.makeText(this, "Logout failed", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
         if (preferences.getBoolean(Preferences.KEY_AUTH_IS_SPLASHSCREEN_LAUNCHED)) {
-            launchProductsActivity();
-        } else {
-            loginViewModel.authenticate().observe(this, couldLogIn -> {
-                if (couldLogIn) {
-                    launchProductsActivity();
-                } else {
-                    Toast.makeText(LoginActivity.this, "Could not log in", Toast.LENGTH_SHORT).show();
-                }
-            });
+            launchSuccessScreen();
         }
     }
 
@@ -125,16 +146,11 @@ public class LoginActivity extends AppCompatActivity {
                     break;
             }
 
-            loginViewModel.logout().observe(this, loggedOut -> {
-                if (loggedOut) {
-                    logoutButton.setVisibility(View.GONE);
-                    preferences.clearPreferences(Preferences.PREFERENCE_TYPE_AUTH);
-                }
-            });
+            loginViewModel.logout();
         }
     }
 
-    private void launchProductsActivity() {
+    private void launchSuccessScreen() {
         Intent intent = new Intent(this, MainNavigationActivity.class);
         startActivity(intent);
         finish();
@@ -188,14 +204,14 @@ public class LoginActivity extends AppCompatActivity {
 //                                JSONObject data = response.getJSONObject("data");
 //                                userId = data.getString("userId");
 //
-//                                launchProductsActivity(mAuth.getCurrentUser(), false);
+//                                launchSuccessScreen(mAuth.getCurrentUser(), false);
 //                                Toast.makeText(LoginActivity.this, userId, Toast.LENGTH_SHORT).show();
 //                            }
 //
 //                            if ("100".equals(response.getString("errorCode"))) {
 //
 //                                //Go to main activity if the user is already in the database
-//                                launchProductsActivity(mAuth.getCurrentUser(), false);
+//                                launchSuccessScreen(mAuth.getCurrentUser(), false);
 ////                                Toast.makeText(LoginActivity.this, "Error: " + response.getString("errorCode") + " " + response.getString("errorMessage"), Toast.LENGTH_SHORT).show();
 //                            }
 //                        } catch (JSONException e) {

@@ -34,4 +34,6 @@
     <string name="purchase">Purchase</string>
     <string name="cart">Cart</string>
     <string name="product_quantity">Quantity:\n  %1$d</string>
+    <string name="authenticate_title">Authenticate with fingerprint to continue</string>
+    <string name="authenticate_other_method">Negative Button</string>
 </resources>

@@ -9,6 +9,9 @@ public class UserEntity {
     @PrimaryKey(autoGenerate = true)
     public int id;
 
+    @ColumnInfo(name = "firebase_token")
+    public String firebaseToken;
+
     @ColumnInfo(name = "display_name")
     public String displayName;
 

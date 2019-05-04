@@ -22,6 +22,7 @@ ext {
     final roomVersion = "2.1.0-alpha07"
     final stethoVersion = "1.5.1"
     final preferenceVersion = "1.0.0"
+    final biometricVersion = "1.0.0-alpha04"
 
     lifeCycleDependencies = [
             lifeCycle: "androidx.lifecycle:lifecycle-extensions:$lifeCycleVersion"
@@ -126,5 +127,9 @@ ext {
     
     preferenceDependencies = [
             preference : "androidx.preference:preference:$preferenceVersion"
+    ]
+
+    biometricDependencies = [
+            biometricCompat : "androidx.biometric:biometric:$biometricVersion"
     ]
 }

@@ -1,18 +1,30 @@
 package com.project.mobility.repository.login;
 
+import com.project.mobility.app.MobilityApplication;
 import com.project.mobility.di.injection.Injection;
 import com.project.mobility.model.login.provider.AuthProvider;
-import com.project.mobility.storage.Preferences;
+import com.project.mobility.model.user.User;
+import com.project.mobility.storage.persistence.room.AppDatabase;
+import com.project.mobility.storage.persistence.room.dao.UserDao;
+import com.project.mobility.storage.persistence.room.entities.UserEntity;
 
 import javax.inject.Inject;
 
+import io.reactivex.Completable;
+import io.reactivex.Maybe;
+import io.reactivex.MaybeSource;
+import io.reactivex.Single;
+import io.reactivex.schedulers.Schedulers;
+
 public class LoginRepoImpl implements LoginRepo {
 
-    @Inject Preferences preferences;
+    private UserDao userDao;
 
     @Inject
     public LoginRepoImpl() {
         Injection.inject(this);
+        AppDatabase appDatabase = MobilityApplication.getInstance().getAppDatabase();
+        userDao = appDatabase.userDao();
     }
 
     @Override
@@ -21,19 +33,36 @@ public class LoginRepoImpl implements LoginRepo {
     }
 
     @Override
-    public boolean register(AuthProvider authProvider) {
+    public Completable register(AuthProvider authProvider) {
         if (authProvider != null) {
-            authProvider.authenticate();
-            preferences.setBoolean(Preferences.KEY_AUTH_IS_SPLASHSCREEN_LAUNCHED, true);
-            return true;
+            return authProvider.authenticate()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(Schedulers.io())
+                    .flatMap(this::converUserToUserEntity)
+                    .flatMapCompletable(userEntity -> userDao.insert(userEntity));
         }
 
-        return false;
+        return Completable.error(new Throwable("Auth provider not set"));
+    }
+
+    private MaybeSource<UserEntity> converUserToUserEntity(User user) {
+        UserEntity userEntity = new UserEntity();
+        userEntity.displayName = user.getDisplayName();
+        userEntity.emailAddress = user.getEmail();
+        userEntity.firebaseToken = user.getToken();
+        userEntity.phoneNumber = "afasfa";
+
+        return Maybe.just(userEntity);
     }
 
     @Override
-    public boolean logout(AuthProvider authProvider) {
+    public Single<Boolean> logout(AuthProvider authProvider) {
         return authProvider.logout();
+    }
+
+    @Override
+    public Maybe<Integer> getLoggedInUserCount() {
+        return userDao.getLoggedInUserCount();
     }
 
     private void addUser(String firebaseId, String email, String displayName) {

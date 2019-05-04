@@ -33,10 +33,14 @@ public class CartViewModel extends ViewModel {
     private MutableLiveData<Boolean> increaseProductAmountMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<Integer> totalCartPriceMutableLiveData = new MutableLiveData<>();
 
+    private MutableLiveData<Boolean> purchaseStatusMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<Boolean> canPurchaseMutableLiveData = new MutableLiveData<>();
+
     public CartViewModel() {
         Injection.inject(this);
         getCart();
         getCartTotalPrice();
+        getCanPurchase();
     }
 
     @Override
@@ -47,6 +51,42 @@ public class CartViewModel extends ViewModel {
         }
 
         Injection.closeScope(this);
+    }
+
+    public LiveData<List<CartProduct>> getCartMutableLiveData() {
+        return cartMutableLiveData;
+    }
+
+    public LiveData<Boolean> getLoadingMutableLiveData() {
+        return loadingMutableLiveData;
+    }
+
+    public LiveData<Boolean> getRepoErrorMutableLiveData() {
+        return repoErrorMutableLiveData;
+    }
+
+    public LiveData<Boolean> getClearProduct() {
+        return clearProductMutableLiveData;
+    }
+
+    public LiveData<Boolean> getDecreaseProductAmount() {
+        return decreaseProductAmountMutableLiveData;
+    }
+
+    public LiveData<Boolean> getIncreaseProductAmount() {
+        return increaseProductAmountMutableLiveData;
+    }
+
+    public LiveData<Integer> getTotalCartPriceData() {
+        return totalCartPriceMutableLiveData;
+    }
+
+    public LiveData<Boolean> getPurchaseStatus() {
+        return purchaseStatusMutableLiveData;
+    }
+
+    public LiveData<Boolean> canPurchase() {
+        return canPurchaseMutableLiveData;
     }
 
     private void getCart() {
@@ -95,34 +135,6 @@ public class CartViewModel extends ViewModel {
                     }
                 })
         );
-    }
-
-    public LiveData<List<CartProduct>> getCartMutableLiveData() {
-        return cartMutableLiveData;
-    }
-
-    public LiveData<Boolean> getLoadingMutableLiveData() {
-        return loadingMutableLiveData;
-    }
-
-    public LiveData<Boolean> getRepoErrorMutableLiveData() {
-        return repoErrorMutableLiveData;
-    }
-
-    public LiveData<Boolean> getClearProduct() {
-        return clearProductMutableLiveData;
-    }
-
-    public LiveData<Boolean> getDecreaseProductAmount() {
-        return decreaseProductAmountMutableLiveData;
-    }
-
-    public LiveData<Boolean> getIncreaseProductAmount() {
-        return increaseProductAmountMutableLiveData;
-    }
-
-    public MutableLiveData<Integer> getTotalCartPriceData() {
-        return totalCartPriceMutableLiveData;
     }
 
     public void decreaseProductAmount(int productId) {
@@ -181,6 +193,37 @@ public class CartViewModel extends ViewModel {
                     Timber.d("Failed clearing product from cart");
                     throwable.printStackTrace();
                     clearProductMutableLiveData.setValue(false);
+                })
+        );
+    }
+
+    public void purchase() {
+        compositeDisposable.add(cartModel.purchase()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(() -> {
+                    Timber.d("Purchase successful");
+                    purchaseStatusMutableLiveData.setValue(true);
+                }, throwable -> {
+                    Timber.d("Purchase failed");
+                    throwable.printStackTrace();
+                    purchaseStatusMutableLiveData.setValue(false);
+                })
+        );
+    }
+
+    private void getCanPurchase() {
+        canPurchaseMutableLiveData.setValue(false);
+        compositeDisposable.add(cartModel.getLoggedInUserCount()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(count -> {
+                    Timber.d("Logged in user count %s", count);
+                    canPurchaseMutableLiveData.setValue(count != 0);
+                }, throwable -> {
+                    Timber.d("No logged in user");
+                    throwable.printStackTrace();
+                    canPurchaseMutableLiveData.setValue(false);
                 })
         );
     }
