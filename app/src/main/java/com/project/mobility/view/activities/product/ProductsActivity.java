@@ -111,39 +111,31 @@ public class ProductsActivity extends AppCompatActivity implements ProductsRecyc
         productsViewModel.fetchProducts();
 
         productsViewModel.getLoadingData().observe(this, loading -> {
-            if (loading != null) {
-                progressBar.setVisibility(loading ? View.VISIBLE : View.GONE);
-                productsRecyclerView.setVisibility(loading ? View.GONE : View.VISIBLE);
-            }
+            progressBar.setVisibility(loading ? View.VISIBLE : View.GONE);
+            productsRecyclerView.setVisibility(loading ? View.GONE : View.VISIBLE);
         });
 
         productsViewModel.getRepoErrorLoading().observe(this, repoError -> {
-            if (repoError != null) {
-                if (repoError) {
-                    productsRecyclerView.setVisibility(View.GONE);
-                    errorLoadingDataTextView.setVisibility(View.VISIBLE);
-                } else {
-                    productsRecyclerView.setVisibility(View.VISIBLE);
-                    errorLoadingDataTextView.setVisibility(View.GONE);
-                }
+            if (repoError) {
+                productsRecyclerView.setVisibility(View.GONE);
+                errorLoadingDataTextView.setVisibility(View.VISIBLE);
+            } else {
+                productsRecyclerView.setVisibility(View.VISIBLE);
+                errorLoadingDataTextView.setVisibility(View.GONE);
             }
         });
 
         productsViewModel.getProducts().observe(this, products -> {
-            if (products != null) {
-                productsRecyclerViewAdapter.setProductList(products);
-                productsRecyclerView.setAdapter(productsRecyclerViewAdapter);
-                productsRecyclerViewAdapter.setAddToCartListener(ProductsActivity.this);
-            }
+            productsRecyclerViewAdapter.setProductList(products);
+            productsRecyclerView.setAdapter(productsRecyclerViewAdapter);
+            productsRecyclerViewAdapter.setAddToCartListener(ProductsActivity.this);
         });
 
         productsViewModel.getAddedToCartStatus().observe(this, addedToCart -> {
-            if (addedToCart != null) {
-                if (addedToCart) {
-                    Toast.makeText(this, "Added successfully to cart", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(this, "There was an error adding to cart", Toast.LENGTH_SHORT).show();
-                }
+            if (addedToCart) {
+                Toast.makeText(this, "Added successfully to cart", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "There was an error adding to cart", Toast.LENGTH_SHORT).show();
             }
         });
     }

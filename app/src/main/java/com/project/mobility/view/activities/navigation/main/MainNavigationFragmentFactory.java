@@ -4,7 +4,6 @@ import com.project.mobility.R;
 import com.project.mobility.view.activities.navigation.FragmentNavigationFactory;
 import com.project.mobility.view.activities.navigation.NavigationFragment;
 import com.project.mobility.view.fragments.cart.CartFragment;
-import com.project.mobility.view.fragments.FavoritesFragment;
 import com.project.mobility.view.fragments.home.HomeFragment;
 import com.project.mobility.view.fragments.SettingsFragment;
 
@@ -42,6 +41,5 @@ public class MainNavigationFragmentFactory implements FragmentNavigationFactory 
         fragmentList.add(new NavigationFragment(R.id.action_home, HomeFragment.class.getName()));
         fragmentList.add(new NavigationFragment(R.id.action_cart, CartFragment.class.getName()));
         fragmentList.add(new NavigationFragment(R.id.action_settings, SettingsFragment.class.getName()));
-        fragmentList.add(new NavigationFragment(R.id.action_favorites, FavoritesFragment.class.getName()));
     }
 }
