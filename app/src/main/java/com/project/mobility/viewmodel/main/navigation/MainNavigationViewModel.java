@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.project.mobility.di.injection.Injection;
 import com.project.mobility.model.main.navigation.MainNavigationModel;
+import com.project.mobility.model.product.cart.CartCountSubject;
 
 import javax.inject.Inject;
 
@@ -20,9 +21,11 @@ public class MainNavigationViewModel extends ViewModel {
     @Inject CompositeDisposable compositeDisposable;
 
     private MutableLiveData<Integer> cartContentCountMutableLiveData = new MutableLiveData<>();
+    private CartCountSubject cartCountSubject;
 
     public MainNavigationViewModel() {
         Injection.inject(this);
+        cartCountSubject = CartCountSubject.getInstance();
         getCartContentCount();
     }
 
@@ -40,8 +43,21 @@ public class MainNavigationViewModel extends ViewModel {
         return cartContentCountMutableLiveData;
     }
 
-    public void getCartContentCount() {
+    private void getCartContentCount() {
         compositeDisposable.add(mainNavigationModel.getCartContentCount()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(count -> {
+                    Timber.d("Got cart count %s", count);
+                    cartContentCountMutableLiveData.setValue(count);
+                }, throwable -> {
+                    Timber.d("Failed to get cart count");
+                    throwable.printStackTrace();
+                    cartContentCountMutableLiveData.setValue(0);
+                })
+        );
+
+        compositeDisposable.add(cartCountSubject.getObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(count -> {

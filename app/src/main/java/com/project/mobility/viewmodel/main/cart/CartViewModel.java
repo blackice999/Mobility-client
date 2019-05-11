@@ -3,6 +3,7 @@ package com.project.mobility.viewmodel.main.cart;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+import androidx.room.EmptyResultSetException;
 
 import com.project.mobility.di.injection.Injection;
 import com.project.mobility.model.main.cart.CartModel;
@@ -190,9 +191,15 @@ public class CartViewModel extends ViewModel {
                     Timber.d("Product cleared from cart");
                     clearProductMutableLiveData.setValue(true);
                 }, throwable -> {
-                    Timber.d("Failed clearing product from cart");
+                    if (throwable instanceof EmptyResultSetException) {
+                        Timber.d("Empty cart table");
+                        clearProductMutableLiveData.setValue(true);
+                    } else {
+                        Timber.d("Failed clearing product from cart");
+                        clearProductMutableLiveData.setValue(false);
+                    }
+
                     throwable.printStackTrace();
-                    clearProductMutableLiveData.setValue(false);
                 })
         );
     }

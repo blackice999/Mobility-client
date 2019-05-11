@@ -2,6 +2,8 @@ package com.project.mobility.repository.product;
 
 import com.project.mobility.app.MobilityApplication;
 import com.project.mobility.model.product.Product;
+import com.project.mobility.model.product.cart.CartElementCount;
+import com.project.mobility.model.product.cart.CartCountSubject;
 import com.project.mobility.storage.persistence.room.AppDatabase;
 import com.project.mobility.storage.persistence.room.dao.CartDao;
 import com.project.mobility.storage.persistence.room.dao.CategoryDao;
@@ -25,6 +27,7 @@ import io.reactivex.schedulers.Schedulers;
 
 public class ProductsRepoImpl implements ProductsRepo {
 
+    private final CartCountSubject cartCountSubject;
     private boolean isServerOnline;
     private CartDao cartDao;
     private ProductDao productDao;
@@ -38,6 +41,7 @@ public class ProductsRepoImpl implements ProductsRepo {
         productDao = appDatabase.productDao();
         categoryDao = appDatabase.categoryDao();
         addTestCategoriesToDb();
+        cartCountSubject = CartCountSubject.getInstance();
     }
 
     private void addTestCategoriesToDb() {
@@ -68,11 +72,23 @@ public class ProductsRepoImpl implements ProductsRepo {
 
     @Override
     public Completable addToCart(Product product) {
-        return cartDao.productCount(product.getId()).flatMapCompletable(
-                cartElement -> cartElement.count == 0 ?
-                        cartDao.insert(convertToCartEntity(product)) :
-                        cartDao.updateQuantity(product.getId(), cartElement.quantity + 1)
-        );
+        return cartDao.productCount(product.getId())
+                .flatMapCompletable(cartElement -> cartElement.count == 0 ?
+                        insertNewProduct(product) : updateQuantity(product, cartElement));
+    }
+
+    private Completable insertNewProduct(Product product) {
+        return cartDao.insert(convertToCartEntity(product))
+                .andThen(cartDao.getCartCount()
+                        .flatMapCompletable(count -> {
+                            cartCountSubject.setValue(count);
+                            return Completable.complete();
+                        })
+                );
+    }
+
+    private Completable updateQuantity(Product product, CartElementCount cartElement) {
+        return cartDao.updateQuantity(product.getId(), cartElement.quantity + 1);
     }
 
     @Override

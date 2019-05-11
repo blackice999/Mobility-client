@@ -214,6 +214,8 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Ca
     }
 
     private void showCartList(List<CartProduct> products) {
+        emptyCartText.setVisibility(View.GONE);
+        cartContainer.setVisibility(View.VISIBLE);
         cartRecyclerViewAdapter.setProducts(products);
         cartRecyclerViewAdapter.setCartQuantityObserver(CartFragment.this);
         recyclerView.setAdapter(cartRecyclerViewAdapter);
