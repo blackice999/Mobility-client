@@ -12,22 +12,19 @@ public class ServerUtil {
     }
 
     public static Product createDummyProduct(int categoryId) {
-        return createDummyProduct(categoryId, 10);
-    }
-
-    public static Product createDummyProduct(int categoryId, int id) {
         Product product = new Product();
-        product.setId(id);
+        int randomId = (int) (Math.random() * 200 + 1);
+        product.setId(randomId);
         product.setDescription("First product description First product description First product description First product description First product description First product description First product description First product description First product description First product description First product description First product description First product description First product description First product description First product description" +
                 "First product description First product description First product description First product description First product description First product description First product description First product description First product description First product description First product description First product description First product description First product description First product description First product description");
-        product.setName("First product " + id);
+        product.setName("First product " + randomId);
         product.setCategoryId(categoryId);
 
         List<String> imagesUrlList = new ArrayList<>();
         imagesUrlList.add("https://www.xda-developers.com/files/2018/12/Galaxy-S10-new-renders.jpg");
         imagesUrlList.add("https://www.bhphotovideo.com/images/images1000x1000/google_ga00458_us_pixel_3_64gb_smartphone_1448919.jpg");
         product.setImagesUrl(imagesUrlList);
-        product.setPrice(200 + id);
+        product.setPrice(200 + randomId);
         return product;
     }
 
@@ -36,7 +33,7 @@ public class ServerUtil {
         List<Product> products = new ArrayList<>();
 
         for (int i = 0; i < 10; i++) {
-            products.add(createDummyProduct(categoryId, i));
+            products.add(createDummyProduct(categoryId));
         }
 
         return products;
