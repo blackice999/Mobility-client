@@ -3,6 +3,7 @@ package com.project.mobility.repository.main.cart;
 import android.util.Pair;
 
 import com.project.mobility.app.MobilityApplication;
+import com.project.mobility.model.product.cart.CartCountSubject;
 import com.project.mobility.model.product.cart.CartProduct;
 import com.project.mobility.storage.persistence.room.AppDatabase;
 import com.project.mobility.storage.persistence.room.dao.CartDao;
@@ -22,12 +23,14 @@ public class CartRepoImpl implements CartRepo {
 
     private CartDao cartDao;
     private UserDao userDao;
+    private CartCountSubject cartCountSubject;
 
     @Inject
     public CartRepoImpl() {
         AppDatabase appDatabase = MobilityApplication.getInstance().getAppDatabase();
         cartDao = appDatabase.cartDao();
         userDao = appDatabase.userDao();
+        cartCountSubject = CartCountSubject.getInstance();
     }
 
     @Override
@@ -37,7 +40,13 @@ public class CartRepoImpl implements CartRepo {
 
     @Override
     public Completable clearProduct(int productId) {
-        return cartDao.clearProduct(productId);
+        return cartDao.clearProduct(productId)
+                .andThen(cartDao.getCartCount()
+                        .flatMapCompletable(count -> {
+                            cartCountSubject.setValue(count);
+                            return Completable.complete();
+                        })
+                );
     }
 
     @Override
@@ -64,7 +73,10 @@ public class CartRepoImpl implements CartRepo {
         return cartDao.getCart()
                 .flatMap(cartEntities -> convertToProductsObservable(Observable.just(cartEntities)))
                 .flatMap(cartProducts -> userDao.getCurrentUser(), Pair::new)
-                .flatMapCompletable(cart -> sendPurchaseToServer(cart.second.firebaseToken, cart.first));
+                .flatMapCompletable(cart -> {
+                    cartCountSubject.setValue(0);
+                    return sendPurchaseToServer(cart.second.firebaseToken, cart.first);
+                });
     }
 
     private Completable sendPurchaseToServer(String firebaseToken, List<CartProduct> cartProducts) {
