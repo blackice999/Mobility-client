@@ -1,12 +1,20 @@
 package com.project.mobility.view.fragments.onboarding.adapter;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.recyclerview.selection.ItemDetailsLookup;
+import androidx.recyclerview.selection.SelectionTracker;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.project.mobility.R;
+import com.project.mobility.di.injection.Injection;
 import com.project.mobility.model.onboarding.category.Category;
+import com.project.mobility.util.image.ImageLoader;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -15,20 +23,27 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import androidx.recyclerview.selection.ItemDetailsLookup;
-import androidx.recyclerview.selection.SelectionTracker;
-import androidx.recyclerview.widget.RecyclerView;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRecyclerViewAdapter.ViewHolder> {
+
+    @Inject ImageLoader imageLoader;
+    @Inject Context context;
 
     private List<Category> categories;
     private SelectionTracker<Long> selectionTracker;
     private List<Integer> categoryPositions;
 
     @Inject
-    public CategoryRecyclerViewAdapter(List<Category> categories) {
-        this.categories = categories;
+    public CategoryRecyclerViewAdapter() {
+        Injection.inject(this);
         setHasStableIds(true);
+    }
+
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
     }
 
     public void setSelectionTracker(SelectionTracker<Long> selectionTracker) {
@@ -53,15 +68,20 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRe
     @NotNull
     @Override
     public ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_category, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.main_category_list, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NotNull final ViewHolder holder, int position) {
         holder.mItem = categories.get(position);
-        holder.mContentView.setText(categories.get(position).getName());
+        holder.categoryName.setText(categories.get(position).getName());
         holder.bind(selectionTracker.isSelected((long) position));
+        imageLoader.load(context, getImageDrawableFromName(categories.get(position).getImageName()), holder.categoryImage);
+    }
+
+    private int getImageDrawableFromName(String imageName) {
+        return context.getResources().getIdentifier(imageName, "drawable", context.getPackageName());
     }
 
     @Override
@@ -74,16 +94,17 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRe
         return categories.size();
     }
 
-
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final TextView mContentView;
+        @BindView(R.id.category_name) AppCompatTextView categoryName;
+        @BindView(R.id.category_image) AppCompatImageView categoryImage;
+
         public Category mItem;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mContentView = view.findViewById(R.id.content);
+            ButterKnife.bind(this, view);
         }
 
         void bind(boolean isSelected) {
@@ -97,7 +118,7 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRe
         @NotNull
         @Override
         public String toString() {
-            return super.toString() + " '" + mContentView.getText() + "'";
+            return super.toString() + " '" + categoryName.getText() + "'";
         }
     }
 }

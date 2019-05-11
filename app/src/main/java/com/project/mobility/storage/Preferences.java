@@ -6,14 +6,15 @@ import javax.inject.Inject;
 
 public class Preferences {
     public static final String KEY_AUTH_PROVIDER_NAME = "key_authProviderName";
-    public static final String KEY_AUTH_PROVIDER_EMAIL = "key_authProviderEmail";
-    public static final String KEY_AUTH_PROVIDER_DISPLAY_NAME = "key_authProviderDisplayName";
     public static final String KEY_AUTH_PROVIDER_PHONE_NUMBER = "key_authProviderPhoneNumber";
     public static final String KEY_AUTH_PROVIDER_DELIVERY_ADDRESS = "key_authProviderDeliveryAddress";
     public static final String KEY_AUTH_IS_SPLASHSCREEN_LAUNCHED = "key_authSplashScreenLaunched";
     public static final String KEY_ONBOARDING_COMPLETE = "key_OnboardingComplete";
     public static final int PREFERENCE_TYPE_AUTH = 0;
     public static final int PREFERENCE_TYPE_ONBOARDING = 1;
+
+    public static final String KEY_FCM_TOKEN = "key_fcmToken";
+    public static final String KEY_LAST_SHOWN_FRAGMENT = "key_lastShownFragment";
     private final SharedPreferences sharedPreferences;
 
     @Inject
@@ -60,8 +61,6 @@ public class Preferences {
     private void clearAuthPreferences() {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.remove(KEY_AUTH_PROVIDER_NAME);
-        editor.remove(KEY_AUTH_PROVIDER_EMAIL);
-        editor.remove(KEY_AUTH_PROVIDER_DISPLAY_NAME);
         editor.remove(KEY_AUTH_PROVIDER_PHONE_NUMBER);
         editor.remove(KEY_AUTH_PROVIDER_DELIVERY_ADDRESS);
         editor.remove(KEY_AUTH_IS_SPLASHSCREEN_LAUNCHED);

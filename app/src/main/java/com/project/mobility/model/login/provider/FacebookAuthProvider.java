@@ -1,17 +1,19 @@
 package com.project.mobility.model.login.provider;
 
 import com.facebook.login.LoginManager;
-import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.project.mobility.di.injection.Injection;
+import com.project.mobility.model.user.User;
 import com.project.mobility.storage.Preferences;
 
 import javax.inject.Inject;
 
+import durdinapps.rxfirebase2.RxFirebaseAuth;
+import io.reactivex.Maybe;
+import io.reactivex.Single;
 import timber.log.Timber;
 
-public class FacebookAuthProvider extends AuthProvider {
+public class FacebookAuthProvider extends BaseFirebaseAuthProvider {
     public static final String AUTH_PROVIDER_NAME = "Facebook";
 
     @Inject Preferences preferences;
@@ -26,26 +28,20 @@ public class FacebookAuthProvider extends AuthProvider {
     }
 
     @Override
-    public void authenticate() {
-        AuthCredential credential = com.google.firebase.auth.FacebookAuthProvider.getCredential(getToken());
-        FirebaseAuth.getInstance().signInWithCredential(credential)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        Timber.d("signInWithCredential:success");
-                        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-                        preferences.setString(Preferences.KEY_AUTH_PROVIDER_EMAIL, firebaseUser.getEmail());
-                        preferences.setString(Preferences.KEY_AUTH_PROVIDER_DISPLAY_NAME, firebaseUser.getDisplayName());
-                        preferences.setString(Preferences.KEY_AUTH_PROVIDER_NAME, AUTH_PROVIDER_NAME);
-                    } else {
-                        Timber.w(task.getException(), "signInWithCredential:failure");
-                    }
+    public Maybe<User> authenticate() {
+        return RxFirebaseAuth.signInWithCredential(FirebaseAuth.getInstance(), com.google.firebase.auth.FacebookAuthProvider.getCredential(getToken()))
+                .flatMap(authResult -> {
+                    Timber.d("signInWithCredential:success");
+                    return Maybe.just(convertFirebaseUserToUser(authResult.getUser()));
                 });
     }
 
     @Override
-    public boolean logout() {
+    public Single<Boolean> logout() {
         FirebaseAuth.getInstance().signOut();
         LoginManager.getInstance().logOut();
-        return true;
+
+        return Single.fromObservable(RxFirebaseAuth.observeAuthState(FirebaseAuth.getInstance())
+                .flatMapMaybe(firebaseAuth -> Maybe.just(firebaseAuth.getCurrentUser() != null)));
     }
 }

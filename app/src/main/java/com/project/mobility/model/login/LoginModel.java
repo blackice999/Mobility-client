@@ -6,6 +6,9 @@ import com.project.mobility.repository.login.LoginRepo;
 
 import javax.inject.Inject;
 
+import io.reactivex.Completable;
+import io.reactivex.Single;
+
 public class LoginModel {
 
     @Inject LoginRepo loginRepo;
@@ -15,11 +18,11 @@ public class LoginModel {
         Injection.inject(this);
     }
 
-    public boolean login(AuthProvider authProvider) {
+    public Completable login(AuthProvider authProvider) {
         return loginRepo.register(authProvider);
     }
 
-    public boolean logout(AuthProvider provider) {
+    public Single<Boolean> logout(AuthProvider provider) {
         return loginRepo.logout(provider);
     }
 }

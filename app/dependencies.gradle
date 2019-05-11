@@ -17,7 +17,12 @@ ext {
     final materialVersion = "1.0.0"
     final facebookLoginVersion = "4.41.0"
     final timberVersion = "4.7.1"
-
+    final rxJavaVersion = "2.2.0"
+    final rxAndroidVersion = "2.1.1"
+    final roomVersion = "2.1.0-alpha07"
+    final stethoVersion = "1.5.1"
+    final preferenceVersion = "1.0.0"
+    final biometricVersion = "1.0.0-alpha04"
 
     lifeCycleDependencies = [
             lifeCycle: "androidx.lifecycle:lifecycle-extensions:$lifeCycleVersion"
@@ -100,5 +105,31 @@ ext {
 
     loggingDependencies = [
             timber: "com.jakewharton.timber:timber:$timberVersion"
+    ]
+
+    rxDependencies = [
+            rxJava   : "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion",
+            rxAndroid: "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
+    ]
+
+    roomDependendencies = [
+            room  : "androidx.room:room-runtime:$roomVersion",
+            roomRx: "androidx.room:room-rxjava2:$roomVersion"
+    ]
+
+    roomAnnotationProcessorDependencies = [
+            roomAnnotation : "androidx.room:room-compiler:$roomVersion"
+    ]
+
+    stethoDependencies = [
+            stetho : "com.facebook.stetho:stetho:$stethoVersion"
+    ]
+    
+    preferenceDependencies = [
+            preference : "androidx.preference:preference:$preferenceVersion"
+    ]
+
+    biometricDependencies = [
+            biometricCompat : "androidx.biometric:biometric:$biometricVersion"
     ]
 }

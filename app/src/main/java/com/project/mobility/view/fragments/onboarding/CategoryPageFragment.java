@@ -7,7 +7,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.selection.Selection;
+import androidx.recyclerview.selection.SelectionPredicates;
+import androidx.recyclerview.selection.SelectionTracker;
+import androidx.recyclerview.selection.StorageStrategy;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.project.mobility.R;
+import com.project.mobility.di.injection.Injection;
 import com.project.mobility.view.fragments.onboarding.adapter.CategoryItemDetailLookup;
 import com.project.mobility.view.fragments.onboarding.adapter.CategoryRecyclerViewAdapter;
 import com.project.mobility.view.fragments.onboarding.keyprovider.CustomKeyProvider;
@@ -18,22 +29,15 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.selection.Selection;
-import androidx.recyclerview.selection.SelectionPredicates;
-import androidx.recyclerview.selection.SelectionTracker;
-import androidx.recyclerview.selection.StorageStrategy;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
 public class CategoryPageFragment extends Fragment implements FragmentFinishedListener {
 
-    public static final int RECYCLERVIEW_COLUMN_COUNT = 2;
+    private static final int RECYCLERVIEW_COLUMN_COUNT = 2;
     private static final String CATEGORY_SELECTION_ID = "category_selection";
     private static final String ARG_COLUMN_COUNT = "column-count";
     private static final int MINIMUM_CATEGORY_SELECTION = 2;
@@ -41,9 +45,10 @@ public class CategoryPageFragment extends Fragment implements FragmentFinishedLi
     @BindView(R.id.list) RecyclerView recyclerView;
     @BindView(R.id.selected_categories_text) TextView selectedCategoriesText;
 
+    @Inject CategoryRecyclerViewAdapter adapter;
+
     private int mColumnCount = 1;
     private OnboardingCategoryViewModel onboardingCategoryViewModel;
-    private CategoryRecyclerViewAdapter adapter;
 
     public CategoryPageFragment() {
     }
@@ -60,6 +65,8 @@ public class CategoryPageFragment extends Fragment implements FragmentFinishedLi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Injection.inject(this);
+
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
@@ -74,7 +81,6 @@ public class CategoryPageFragment extends Fragment implements FragmentFinishedLi
         ButterKnife.bind(this, view);
         setSelectedCategoriesCountMessage(0);
 
-        // Set the adapter
         Context context = view.getContext();
         if (mColumnCount <= 1) {
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
@@ -82,8 +88,13 @@ public class CategoryPageFragment extends Fragment implements FragmentFinishedLi
             recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
         }
 
+        setupViewModel();
+        return view;
+    }
+
+    private void setupViewModel() {
         onboardingCategoryViewModel.getCategories().observe(getViewLifecycleOwner(), categories -> {
-            adapter = new CategoryRecyclerViewAdapter(categories);
+            adapter.setCategories(categories);
             recyclerView.setAdapter(adapter);
             SelectionTracker<Long> selectionTracker = new SelectionTracker.Builder<>(
                     CATEGORY_SELECTION_ID,
@@ -108,8 +119,6 @@ public class CategoryPageFragment extends Fragment implements FragmentFinishedLi
 
             adapter.setSelectionTracker(selectionTracker);
         });
-
-        return view;
     }
 
     private void setSelectedCategoriesPosition(Selection<Long> selectedCategories) {
@@ -129,6 +138,12 @@ public class CategoryPageFragment extends Fragment implements FragmentFinishedLi
     public void doFinish() {
         Timber.d("Fragment is sending finish");
         subscribeNotificationsTopics();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Injection.closeScope(this);
     }
 
     private void subscribeNotificationsTopics() {

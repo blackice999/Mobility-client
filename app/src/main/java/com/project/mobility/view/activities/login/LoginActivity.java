@@ -7,6 +7,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProviders;
+
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -24,13 +27,11 @@ import com.project.mobility.di.injection.Injection;
 import com.project.mobility.model.login.provider.FacebookAuthProvider;
 import com.project.mobility.model.login.provider.GoogleAuthProvider;
 import com.project.mobility.storage.Preferences;
-import com.project.mobility.view.activities.ProductsActivity;
+import com.project.mobility.view.activities.navigation.main.MainNavigationActivity;
 import com.project.mobility.viewmodel.login.LoginViewModel;
 
 import javax.inject.Inject;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProviders;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -64,8 +65,11 @@ public class LoginActivity extends AppCompatActivity {
         Injection.inject(this);
         loginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
 //        editTextEmail.addTextChangedListener(new GenericTextWatcher(editTextEmail, (TextInputLayout) editTextEmail.getParent().getParent()));
+        setupViewModel();
+        initFacebookLogin();
+    }
 
-        // Initialize Facebook Login button
+    private void initFacebookLogin() {
         mCallbackManager = CallbackManager.Factory.create();
         facebookLoginButton.setReadPermissions(FACEBOOK_EMAIL_PERMISSIONS, FACEBOOK_PUBLIC_PROFILE_PERMISSIONS);
         facebookLoginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
@@ -89,19 +93,33 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    private void setupViewModel() {
+        loginViewModel.getUserAuthenticate().observe(this, authenticated -> {
+            if (authenticated) {
+                Toast.makeText(this, "Authenticated successfully", Toast.LENGTH_SHORT).show();
+                launchSuccessScreen();
+                preferences.setBoolean(Preferences.KEY_AUTH_IS_SPLASHSCREEN_LAUNCHED, true);
+            } else {
+                Toast.makeText(this, "Authentication failed", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        loginViewModel.getUserLogout().observe(this, loggedOut -> {
+            if (loggedOut) {
+                Toast.makeText(this, "Logged out successfully", Toast.LENGTH_SHORT).show();
+                logoutButton.setVisibility(View.GONE);
+                preferences.clearPreferences(Preferences.PREFERENCE_TYPE_AUTH);
+            } else {
+                Toast.makeText(this, "Logout failed", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
         if (preferences.getBoolean(Preferences.KEY_AUTH_IS_SPLASHSCREEN_LAUNCHED)) {
-            launchProductsActivity();
-        } else {
-            loginViewModel.authenticate().observe(this, couldLogIn -> {
-                if (couldLogIn) {
-                    launchProductsActivity();
-                } else {
-                    Toast.makeText(LoginActivity.this, "Could not log in", Toast.LENGTH_SHORT).show();
-                }
-            });
+            launchSuccessScreen();
         }
     }
 
@@ -149,17 +167,12 @@ public class LoginActivity extends AppCompatActivity {
                     break;
             }
 
-            loginViewModel.logout().observe(this, loggedOut -> {
-                if (loggedOut) {
-                    logoutButton.setVisibility(View.GONE);
-                    preferences.clearPreferences(Preferences.PREFERENCE_TYPE_AUTH);
-                }
-            });
+            loginViewModel.logout();
         }
     }
 
-    private void launchProductsActivity() {
-        Intent intent = new Intent(this, ProductsActivity.class);
+    private void launchSuccessScreen() {
+        Intent intent = new Intent(this, MainNavigationActivity.class);
         startActivity(intent);
         finish();
     }
@@ -175,7 +188,6 @@ public class LoginActivity extends AppCompatActivity {
                 loginViewModel.setAuthProvider(googleAuthProvider);
                 loginViewModel.authenticate();
             } catch (ApiException e) {
-                // Google Sign In failed, update UI appropriately
                 Timber.w(e, "Google sign in failed");
             }
         } else {
@@ -183,69 +195,4 @@ public class LoginActivity extends AppCompatActivity {
             mCallbackManager.onActivityResult(requestCode, resultCode, data);
         }
     }
-
-//    private void addUser(String firebaseId, String email, String displayName) {
-//        String url = "http://192.168.0.103/hiking-trails-server/user/add";
-//
-//        // Request a string response from the provided URL.
-//        JSONObject jsonRequest = new JSONObject();
-//
-//        try {
-//            jsonRequest.put("firebaseId", firebaseId);
-//            jsonRequest.put("email", email);
-//            jsonRequest.put("displayName", displayName);
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//
-//        Log.d("fishLogin", jsonRequest.toString());
-//
-//        JsonObjectRequest stringRequest = new JsonObjectRequest(Request.Method.POST, url, jsonRequest,
-//                new Response.Listener<JSONObject>() {
-//                    @Override
-//                    public void onResponse(JSONObject response) {
-//
-//                        boolean success = response.has("data");
-//                        String userId;
-//                        try {
-//                            if (success) {
-//                                JSONObject data = response.getJSONObject("data");
-//                                userId = data.getString("userId");
-//
-//                                launchProductsActivity(mAuth.getCurrentUser(), false);
-//                                Toast.makeText(LoginActivity.this, userId, Toast.LENGTH_SHORT).show();
-//                            }
-//
-//                            if ("100".equals(response.getString("errorCode"))) {
-//
-//                                //Go to main activity if the user is already in the database
-//                                launchProductsActivity(mAuth.getCurrentUser(), false);
-////                                Toast.makeText(LoginActivity.this, "Error: " + response.getString("errorCode") + " " + response.getString("errorMessage"), Toast.LENGTH_SHORT).show();
-//                            }
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                if (error instanceof TimeoutError || error instanceof NoConnectionError) {
-//                    Toast.makeText(LoginActivity.this, "No connection to server", Toast.LENGTH_LONG).show();
-//                } else if (error instanceof AuthFailureError) {
-//                    //TODO
-//                } else if (error instanceof ServerError) {
-//                    //TODO
-//                } else if (error instanceof NetworkError) {
-//                    //TODO
-//                } else if (error instanceof ParseError) {
-//                    //TODO
-//                }
-////                mTextView.setText("That didn't work!");
-//            }
-//        });
-//
-//// Add the request to the RequestQueue.
-//        VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
-//    }
-
 }
