@@ -21,6 +21,7 @@
     <string name="user_info_preference_category_title">"User info</string>
     <string name="delivery_address_preference_title">Delivery address</string>
     <string name="phone_number_preference_title">Phone number</string>
+    <string name="login_preference_title">Login</string>
     <string name="feedback_preference_category_title">Feedback</string>
     <string name="feedback_preference_title">Send feedback</string>
     <string name="empty_cart_message">The cart is empty</string>

@@ -14,6 +14,7 @@ import androidx.preference.PreferenceFragmentCompat;
 
 import com.project.mobility.R;
 import com.project.mobility.di.injection.Injection;
+import com.project.mobility.view.activities.login.LoginActivity;
 import com.project.mobility.view.activities.web.WebViewActivity;
 
 import java.util.ArrayList;
@@ -129,14 +130,18 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
         phoneNumberPreference.setOnPreferenceChangeListener(this);
         phoneNumberPreference.setSummary(sharedPreferences.getString(getString(R.string.key_phone_number), PLACEHOLDER_PHONE_NUMBER));
 
+        Preference loginPreference = findPreference(getString(R.string.key_login));
+        Intent loginIntent = new Intent(getContext(), LoginActivity.class);
+        loginPreference.setIntent(loginIntent);
+
         ringtonePreference = findPreference(getString(R.string.key_list_ringtone));
         ringtonePreference.setOnPreferenceChangeListener(this);
         ringtonePreference.setSummary(sharedPreferences.getString(getString(R.string.key_list_ringtone), ""));
 
         Preference feedbackPreference = findPreference(getString(R.string.key_feedback));
-        Intent intent = new Intent(getContext(), WebViewActivity.class);
-        intent.putExtra(WebViewActivity.KEY_URL, FEEDBACK_URL);
-        feedbackPreference.setIntent(intent);
+        Intent feedbackIntent = new Intent(getContext(), WebViewActivity.class);
+        feedbackIntent.putExtra(WebViewActivity.KEY_URL, FEEDBACK_URL);
+        feedbackPreference.setIntent(feedbackIntent);
     }
 
     private void setupKeyList() {

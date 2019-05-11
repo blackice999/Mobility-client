@@ -7,6 +7,7 @@
     <string name="key_user_info_category">user_info_category</string>
     <string name="key_delivery_address">delivery_address</string>
     <string name="key_phone_number">phone_number</string>
+    <string name="key_login">login</string>
     <string name="key_feedback_category">feedback_category</string>
     <string name="key_feedback">feedback</string>
 </resources>

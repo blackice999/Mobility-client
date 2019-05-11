@@ -1,10 +1,7 @@
 package com.project.mobility.model.login.provider;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.project.mobility.model.product.Product;
 import com.project.mobility.model.user.User;
-import com.project.mobility.storage.persistence.room.entities.ProductEntity;
 
 import javax.inject.Inject;
 
@@ -37,7 +34,8 @@ public class GoogleAuthProvider extends BaseFirebaseAuthProvider {
     public Single<Boolean> logout() {
         FirebaseAuth.getInstance().signOut();
 
-        return Single.fromObservable(RxFirebaseAuth.observeAuthState(FirebaseAuth.getInstance())
-                .flatMapMaybe(firebaseAuth -> Maybe.just(firebaseAuth.getCurrentUser() != null)));
+        return RxFirebaseAuth.observeAuthState(FirebaseAuth.getInstance())
+                .flatMapSingle(firebaseAuth -> firebaseAuth.getCurrentUser() == null ? Single.just(true) : Single.just(false))
+                .first(false);
     }
 }

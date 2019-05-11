@@ -13,7 +13,6 @@ import javax.inject.Inject;
 import io.reactivex.Completable;
 import io.reactivex.Maybe;
 import io.reactivex.MaybeSource;
-import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
 
 public class LoginRepoImpl implements LoginRepo {
@@ -56,8 +55,11 @@ public class LoginRepoImpl implements LoginRepo {
     }
 
     @Override
-    public Single<Boolean> logout(AuthProvider authProvider) {
-        return authProvider.logout();
+    public Completable logout(AuthProvider authProvider) {
+        return authProvider.logout()
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .flatMapCompletable(loggedOut -> loggedOut ? userDao.deleteAll() : Completable.error(new Throwable("Could not log out")));
     }
 
     @Override
