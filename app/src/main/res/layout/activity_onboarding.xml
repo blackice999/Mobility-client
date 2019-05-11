@@ -17,7 +17,7 @@
         android:id="@+id/onboarding_forward_button"
         android:layout_width="60dp"
         android:layout_height="40dp"
-        android:background="@drawable/button_navigation_state"
+        android:background="@drawable/button_navigation_right_state"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -25,7 +25,8 @@
         android:id="@+id/onboarding_back_button"
         android:layout_width="60dp"
         android:layout_height="40dp"
-        android:background="@drawable/button_navigation_state"
+        android:visibility="gone"
+        android:background="@drawable/button_navigation_left_state"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
