@@ -12,7 +12,6 @@ import androidx.core.widget.ContentLoadingProgressBar;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.project.mobility.R;
 import com.project.mobility.model.product.Product;
@@ -54,11 +53,6 @@ public class ProductDetailActivity extends AppCompatActivity {
         productDetailViewModel = ViewModelProviders.of(this).get(ProductDetailViewModel.class);
         productDetailViewModel.setProductId(getIntent().getIntExtra(KEY_PRODUCT_ID, 0));
         setupViewModel();
-    }
-
-    @OnClick(R.id.button_add_to_cart)
-    public void addToCart() {
-        productDetailViewModel.addToCart();
     }
 
     private void setupViewModel() {
@@ -113,7 +107,6 @@ public class ProductDetailActivity extends AppCompatActivity {
 
     @OnClick(R.id.fab_add_to_cart)
     public void addToCart(View v) {
-        Snackbar.make(v, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show();
+        productDetailViewModel.addToCart();
     }
 }
