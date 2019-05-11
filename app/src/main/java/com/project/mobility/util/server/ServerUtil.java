@@ -12,34 +12,33 @@ public class ServerUtil {
     }
 
     public static Product createDummyProduct(int categoryId) {
+        return createDummyProduct(categoryId, 10);
+    }
+
+    public static Product createDummyProduct(int categoryId, int id) {
         Product product = new Product();
-        product.setId(10);
+        product.setId(id);
         product.setDescription("First product description First product description First product description First product description First product description First product description First product description First product description First product description First product description First product description First product description First product description First product description First product description First product description" +
                 "First product description First product description First product description First product description First product description First product description First product description First product description First product description First product description First product description First product description First product description First product description First product description First product description");
-        product.setName("First product");
+        product.setName("First product " + id);
         product.setCategoryId(categoryId);
 
         List<String> imagesUrlList = new ArrayList<>();
         imagesUrlList.add("https://www.xda-developers.com/files/2018/12/Galaxy-S10-new-renders.jpg");
         imagesUrlList.add("https://www.bhphotovideo.com/images/images1000x1000/google_ga00458_us_pixel_3_64gb_smartphone_1448919.jpg");
         product.setImagesUrl(imagesUrlList);
-        product.setPrice(200);
+        product.setPrice(200 + id);
         return product;
     }
 
-    public static List<Product> createDummyProductsList(int categoryId) {
-        List<Product> products = new ArrayList<>();
-        Product product = new Product();
-        product.setId(10);
-        product.setDescription("First product description");
-        product.setName("First product");
-        product.setCategoryId(categoryId);
 
-        List<String> imagesUrlList = new ArrayList<>();
-        imagesUrlList.add("https://www.xda-developers.com/files/2018/12/Galaxy-S10-new-renders.jpg");
-        product.setImagesUrl(imagesUrlList);
-        product.setPrice(200);
-        products.add(product);
+    public static List<Product> getDummyProductsList(int categoryId) {
+        List<Product> products = new ArrayList<>();
+
+        for (int i = 0; i < 10; i++) {
+            products.add(createDummyProduct(categoryId, i));
+        }
+
         return products;
     }
 

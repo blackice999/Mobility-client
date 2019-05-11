@@ -24,4 +24,8 @@ public class ProductsModel {
     public Completable addToCart(Product product) {
         return productsRepo.addToCart(product);
     }
+
+    public Observable<List<Product>> searchForProducts(int categoryId, String query) {
+        return productsRepo.searchForProducts(categoryId, query);
+    }
 }

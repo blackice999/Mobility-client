@@ -14,7 +14,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-
             android:name=".view.activities.product.detail.ProductDetailActivity"
             android:configChanges="orientation"
             android:label="@string/title_activity_product_detail"
@@ -28,8 +27,16 @@
         <activity
             android:name=".view.activities.product.ProductsActivity"
             android:label="@string/title_activity_category"
+            android:launchMode="singleTop"
             android:parentActivityName=".view.activities.navigation.main.MainNavigationActivity"
             android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.project.mobility.view.activities.navigation.main.MainNavigationActivity" />
@@ -38,8 +45,7 @@
             android:name=".view.activities.web.WebViewActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
-
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".view.activities.OnboardingActivity"
             android:configChanges="orientation"
@@ -57,7 +63,8 @@
             android:name=".view.activities.navigation.main.MainNavigationActivity"
             android:configChanges="orientation"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".view.activities.login.LoginActivity"
             android:configChanges="orientation"
@@ -99,4 +106,5 @@
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/primary" />
     </application>
+
 </manifest>

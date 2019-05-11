@@ -9,6 +9,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatTextView;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -32,6 +33,7 @@ public class MainNavigationActivity extends AppCompatActivity {
     public static final String FRAGMENT_TAG = "tag_navigation";
 
     @BindView(R.id.bottom_navigation) BottomNavigationView bottomNavigationView;
+    @BindView(R.id.toolbar) Toolbar toolbar;
 
     @Inject MainNavigationFragmentFactory mainNavigationFragmentFactory;
     @Inject Preferences preferences;
@@ -45,6 +47,7 @@ public class MainNavigationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main_navigation);
         ButterKnife.bind(this);
         Injection.inject(this);
+        setSupportActionBar(toolbar);
 
         mainNavigationViewModel = ViewModelProviders.of(this).get(MainNavigationViewModel.class);
         setupViewModel();
