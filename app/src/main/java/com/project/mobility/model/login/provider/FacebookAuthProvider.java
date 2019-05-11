@@ -41,7 +41,8 @@ public class FacebookAuthProvider extends BaseFirebaseAuthProvider {
         FirebaseAuth.getInstance().signOut();
         LoginManager.getInstance().logOut();
 
-        return Single.fromObservable(RxFirebaseAuth.observeAuthState(FirebaseAuth.getInstance())
-                .flatMapMaybe(firebaseAuth -> Maybe.just(firebaseAuth.getCurrentUser() != null)));
+        return RxFirebaseAuth.observeAuthState(FirebaseAuth.getInstance())
+                .flatMapSingle(firebaseAuth -> firebaseAuth.getCurrentUser() == null ? Single.just(true) : Single.just(false))
+                .first(false);
     }
 }

@@ -18,6 +18,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.project.mobility.R;
@@ -43,6 +44,7 @@ public class LoginActivity extends AppCompatActivity {
 
     @BindView(R.id.facebook_sign_in) LoginButton facebookLoginButton;
     @BindView(R.id.logout_button) Button logoutButton;
+    @BindView(R.id.google_sign_in) SignInButton googleLoginButton;
 
     @Inject Preferences preferences;
     @Inject GoogleAuthProvider googleAuthProvider;
@@ -92,7 +94,6 @@ public class LoginActivity extends AppCompatActivity {
             if (authenticated) {
                 Toast.makeText(this, "Authenticated successfully", Toast.LENGTH_SHORT).show();
                 launchSuccessScreen();
-                preferences.setBoolean(Preferences.KEY_AUTH_IS_SPLASHSCREEN_LAUNCHED, true);
             } else {
                 Toast.makeText(this, "Authentication failed", Toast.LENGTH_SHORT).show();
             }
@@ -101,20 +102,25 @@ public class LoginActivity extends AppCompatActivity {
         loginViewModel.getUserLogout().observe(this, loggedOut -> {
             if (loggedOut) {
                 Toast.makeText(this, "Logged out successfully", Toast.LENGTH_SHORT).show();
-                logoutButton.setVisibility(View.GONE);
                 preferences.clearPreferences(Preferences.PREFERENCE_TYPE_AUTH);
+                finish();
             } else {
                 Toast.makeText(this, "Logout failed", Toast.LENGTH_SHORT).show();
             }
         });
-    }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (preferences.getBoolean(Preferences.KEY_AUTH_IS_SPLASHSCREEN_LAUNCHED)) {
-            launchSuccessScreen();
-        }
+        loginViewModel.getUserLoggedIn().observe(this, loggedIn -> {
+            if (loggedIn) {
+                logoutButton.setVisibility(View.VISIBLE);
+                facebookLoginButton.setVisibility(View.GONE);
+                googleLoginButton.setVisibility(View.GONE);
+            } else {
+                logoutButton.setVisibility(View.GONE);
+                facebookLoginButton.setVisibility(View.VISIBLE);
+                googleLoginButton.setVisibility(View.VISIBLE);
+            }
+        });
+
     }
 
     @OnClick(R.id.google_sign_in)
@@ -163,6 +169,7 @@ public class LoginActivity extends AppCompatActivity {
                 googleAuthProvider.setToken(task.getResult(ApiException.class).getIdToken());
                 loginViewModel.setAuthProvider(googleAuthProvider);
                 loginViewModel.authenticate();
+                preferences.setString(Preferences.KEY_AUTH_PROVIDER_NAME, googleAuthProvider.getProviderName());
             } catch (ApiException e) {
                 Timber.w(e, "Google sign in failed");
             }
