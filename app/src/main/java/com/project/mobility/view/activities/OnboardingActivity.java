@@ -35,6 +35,7 @@ public class OnboardingActivity extends AppCompatActivity {
     @BindView(R.id.onboarding_complete_button) AppCompatButton completeOnboardingButton;
     @BindView(R.id.onboarding_login_button) AppCompatButton loginButton;
     @BindView(R.id.onboarding_forward_button) AppCompatButton nextOnboardingPageButton;
+    @BindView(R.id.onboarding_back_button) AppCompatButton backOnboardingPageButton;
 
     @Inject Preferences preferences;
 
@@ -63,6 +64,7 @@ public class OnboardingActivity extends AppCompatActivity {
 
         setupViewPager();
         tabNavigation.setupWithViewPager(viewPager);
+        backOnboardingPageButton.setVisibility(View.GONE);
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -88,6 +90,7 @@ public class OnboardingActivity extends AppCompatActivity {
 
     private void handleNavigationButtons(int position) {
         nextOnboardingPageButton.setVisibility(onLastPage(position) ? View.GONE : View.VISIBLE);
+        backOnboardingPageButton.setVisibility(onFirstPage(position) || onLastPage(position) ? View.GONE : View.VISIBLE);
         completeOnboardingButton.setVisibility(onLastPage(position) ? View.VISIBLE : View.GONE);
         loginButton.setVisibility(onLastPage(position) ? View.VISIBLE : View.GONE);
     }
@@ -108,6 +111,11 @@ public class OnboardingActivity extends AppCompatActivity {
     @OnClick(R.id.onboarding_forward_button)
     public void goToNextPage() {
         viewPager.setCurrentItem(currentPage + 1, true);
+    }
+
+    @OnClick(R.id.onboarding_back_button)
+    public void goToPreviousPage() {
+        viewPager.setCurrentItem(currentPage - 1, true);
     }
 
     @OnClick(R.id.onboarding_complete_button)
@@ -132,10 +140,6 @@ public class OnboardingActivity extends AppCompatActivity {
         } else {
             goToPreviousPage();
         }
-    }
-
-    private void goToPreviousPage() {
-        viewPager.setCurrentItem(currentPage - 1, true);
     }
 
     private void finishFragments() {
