@@ -2,8 +2,9 @@ package com.project.mobility.repository.product;
 
 import com.project.mobility.app.MobilityApplication;
 import com.project.mobility.model.product.Product;
-import com.project.mobility.model.product.cart.CartElementCount;
 import com.project.mobility.model.product.cart.CartCountSubject;
+import com.project.mobility.model.product.cart.CartElementCount;
+import com.project.mobility.model.product.cart.CartTotalPriceSubject;
 import com.project.mobility.storage.persistence.room.AppDatabase;
 import com.project.mobility.storage.persistence.room.dao.CartDao;
 import com.project.mobility.storage.persistence.room.dao.CategoryDao;
@@ -28,6 +29,7 @@ import io.reactivex.schedulers.Schedulers;
 public class ProductsRepoImpl implements ProductsRepo {
 
     private final CartCountSubject cartCountSubject;
+    private CartTotalPriceSubject cartTotalPriceSubject;
     private boolean isServerOnline;
     private CartDao cartDao;
     private ProductDao productDao;
@@ -42,6 +44,7 @@ public class ProductsRepoImpl implements ProductsRepo {
         categoryDao = appDatabase.categoryDao();
         addTestCategoriesToDb();
         cartCountSubject = CartCountSubject.getInstance();
+        cartTotalPriceSubject = CartTotalPriceSubject.getInstance();
     }
 
     private void addTestCategoriesToDb() {
@@ -74,13 +77,17 @@ public class ProductsRepoImpl implements ProductsRepo {
     public Completable addToCart(Product product) {
         return cartDao.productCount(product.getId())
                 .flatMapCompletable(cartElement -> cartElement.count == 0 ?
-                        insertNewProduct(product) : updateQuantity(product, cartElement));
+                        insertNewProduct(product) : updateQuantity(product, cartElement))
+                .andThen(cartDao.getCartTotalPrice().flatMapCompletable(price -> {
+                            cartTotalPriceSubject.setValue(price);
+                            return Completable.complete();
+                        })
+                );
     }
 
     private Completable insertNewProduct(Product product) {
         return cartDao.insert(convertToCartEntity(product))
-                .andThen(cartDao.getCartCount()
-                        .flatMapCompletable(count -> {
+                .andThen(cartDao.getCartCount().flatMapCompletable(count -> {
                             cartCountSubject.setValue(count);
                             return Completable.complete();
                         })

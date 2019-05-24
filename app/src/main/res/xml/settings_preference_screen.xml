@@ -27,6 +27,10 @@
             app:key="@string/key_phone_number"
             app:title="@string/phone_number_preference_title" />
 
+        <Preference
+            app:key="@string/key_login"
+            app:title="@string/login_preference_title" />
+
     </PreferenceCategory>
 
     <PreferenceCategory

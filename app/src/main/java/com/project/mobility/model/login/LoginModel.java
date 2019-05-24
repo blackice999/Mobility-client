@@ -7,7 +7,7 @@ import com.project.mobility.repository.login.LoginRepo;
 import javax.inject.Inject;
 
 import io.reactivex.Completable;
-import io.reactivex.Single;
+import io.reactivex.Maybe;
 
 public class LoginModel {
 
@@ -22,7 +22,11 @@ public class LoginModel {
         return loginRepo.register(authProvider);
     }
 
-    public Single<Boolean> logout(AuthProvider provider) {
+    public Completable logout(AuthProvider provider) {
         return loginRepo.logout(provider);
+    }
+
+    public Maybe<Integer> getLoggedInUserCount() {
+        return loginRepo.getLoggedInUserCount();
     }
 }

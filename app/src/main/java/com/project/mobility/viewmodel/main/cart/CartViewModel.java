@@ -8,6 +8,7 @@ import androidx.room.EmptyResultSetException;
 import com.project.mobility.di.injection.Injection;
 import com.project.mobility.model.main.cart.CartModel;
 import com.project.mobility.model.product.cart.CartProduct;
+import com.project.mobility.model.product.cart.CartTotalPriceSubject;
 
 import java.util.List;
 
@@ -37,8 +38,11 @@ public class CartViewModel extends ViewModel {
     private MutableLiveData<Boolean> purchaseStatusMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<Boolean> canPurchaseMutableLiveData = new MutableLiveData<>();
 
+    private CartTotalPriceSubject cartTotalPriceSubject;
+
     public CartViewModel() {
         Injection.inject(this);
+        cartTotalPriceSubject = CartTotalPriceSubject.getInstance();
         getCart();
         getCartTotalPrice();
         getCanPurchase();
@@ -134,6 +138,18 @@ public class CartViewModel extends ViewModel {
                         Timber.d("Failed returning total cart price");
                         e.printStackTrace();
                     }
+                })
+        );
+
+        compositeDisposable.add(cartTotalPriceSubject.getObservable()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(count -> {
+                    Timber.d("Got total cart price: %s", count);
+                    totalCartPriceMutableLiveData.setValue(count);
+                }, throwable -> {
+                    Timber.d("Failed returning total cart price");
+                    throwable.printStackTrace();
                 })
         );
     }

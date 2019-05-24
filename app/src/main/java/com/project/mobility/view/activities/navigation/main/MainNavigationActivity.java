@@ -21,7 +21,10 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.project.mobility.R;
 import com.project.mobility.di.injection.Injection;
 import com.project.mobility.storage.Preferences;
+import com.project.mobility.view.activities.navigation.NavigationFragment;
 import com.project.mobility.viewmodel.main.navigation.MainNavigationViewModel;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -89,10 +92,19 @@ public class MainNavigationActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        if (preferences.getString(Preferences.KEY_LAST_SHOWN_FRAGMENT) != null) {
-            goToFragment(preferences.getString(Preferences.KEY_LAST_SHOWN_FRAGMENT));
-        } else {
-            goToFragment(mainNavigationFragmentFactory.getList().get(0).getTag());
+        String tag;
+        String lastShownFragmentTag = preferences.getString(Preferences.KEY_LAST_SHOWN_FRAGMENT);
+        tag = lastShownFragmentTag != null ? lastShownFragmentTag : mainNavigationFragmentFactory.getList().get(0).getTag();
+        goToFragment(tag);
+        updateNavigationIcon(tag);
+    }
+
+    private void updateNavigationIcon(String lastShownFragmentTag) {
+        List<NavigationFragment> list = mainNavigationFragmentFactory.getList();
+        for (NavigationFragment navigationFragment : list) {
+            if (navigationFragment.getTag().equals(lastShownFragmentTag)) {
+                bottomNavigationView.setSelectedItemId(navigationFragment.getId());
+            }
         }
     }
 

@@ -10,14 +10,12 @@ import com.project.mobility.storage.persistence.room.dao.CartDao;
 import com.project.mobility.storage.persistence.room.dao.CategoryDao;
 import com.project.mobility.storage.persistence.room.dao.ProductDao;
 import com.project.mobility.storage.persistence.room.dao.UserDao;
-import com.project.mobility.storage.persistence.room.dao.UserFavoriteProductsDao;
 import com.project.mobility.storage.persistence.room.entities.CartEntity;
 import com.project.mobility.storage.persistence.room.entities.CategoryEntity;
 import com.project.mobility.storage.persistence.room.entities.ProductEntity;
 import com.project.mobility.storage.persistence.room.entities.UserEntity;
-import com.project.mobility.storage.persistence.room.entities.UserFavoriteProductsEntity;
 
-@Database(entities = {ProductEntity.class, CategoryEntity.class, UserEntity.class, UserFavoriteProductsEntity.class, CartEntity.class}, version = 1)
+@Database(entities = {ProductEntity.class, CategoryEntity.class, UserEntity.class, CartEntity.class}, version = 1)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static final String DATABASE_NAME = "mobility";
@@ -27,8 +25,6 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract CategoryDao categoryDao();
 
     public abstract UserDao userDao();
-
-    public abstract UserFavoriteProductsDao userFavoriteProductsDao();
 
     public abstract CartDao cartDao();
 
