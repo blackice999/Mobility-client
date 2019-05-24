@@ -4,6 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
+
 import com.google.android.material.animation.ArgbEvaluatorCompat;
 import com.google.android.material.tabs.TabLayout;
 import com.project.mobility.R;
@@ -20,10 +25,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatButton;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -57,7 +58,7 @@ public class OnboardingActivity extends AppCompatActivity {
         }
 
         colorList = new int[]{
-                getResources().getColor(R.color.yellow),
+                getResources().getColor(R.color.com_facebook_blue),
                 getResources().getColor(R.color.green),
                 getResources().getColor(R.color.orange)
         };
@@ -100,9 +101,9 @@ public class OnboardingActivity extends AppCompatActivity {
 
     private void setupViewPager() {
         List<Fragment> fragments = new ArrayList<>();
-        fragments.add(PageFragment.newInstance("Page  one", ""));
+        fragments.add(PageFragment.newInstance(getString(R.string.onboarding_description_text), R.drawable.splash_image));
         fragments.add(CategoryPageFragment.newInstance());
-        fragments.add(PageFragment.newInstance("Page three", ""));
+        fragments.add(PageFragment.newInstance(getString(R.string.onboarding_have_fun_text), R.drawable.splash_image));
         adapter = new OnboardingSectionAdapter(getSupportFragmentManager(), fragments);
         viewPager.setAdapter(adapter);
     }
