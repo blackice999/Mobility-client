@@ -33,4 +33,7 @@
     <string name="search_hint">Search products in this category</string>
     <string name="title_activity_searchable">SearchableActivity</string>
     <string name="search_menu_text">Search</string>
+    <string name="onboarding_text">Mobility</string>
+    <string name="onboarding_description_text">Easy to buy, free to try</string>
+    <string name="onboarding_have_fun_text">Just use it!</string>
 </resources>
