@@ -9,6 +9,11 @@ public class StringUtils {
         return Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
+
+    public static boolean isPhoneValid(String number) {
+        return Patterns.PHONE.matcher(number).matches();
+    }
+  
     public static boolean containsIgnoreCase(String haystack, String needle) {
         if (needle.equals("")) {
             return true;

@@ -3,6 +3,9 @@
     <string name="google_client_id">639003857573-tva58tn446d3v78tr6e9bthod5uu8v4v.apps.googleusercontent.com</string>
     <string name="facebook_app_id">2614116595326547</string>
     <string name="fb_login_protocol_scheme">fb2614116595326547</string>
+    <string name="delivery_address">Delivery Address</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="mobility_image_content_description">Mobility Image</string>
 
     <string name="onboarding_selected_categories">select at least 2 categories. You have selected: %1$d</string>
     <string name="navigation_finish_message">Finish</string>
